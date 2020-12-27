@@ -17,8 +17,10 @@ func routeLogin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(body.Username);
-	fmt.Println(body.Password)
+	valid := body.Username == "user" && body.Password == "password"
 
-	c.JSON(http.StatusOK, fmt.Sprintf("Recieved login: Username: %s, Password: %s", body.Username, body.Password))
+	c.JSON(http.StatusOK, gin.H{
+		"success": valid,
+		"message": fmt.Sprintf("Recieved login: Username: %s, Password: %s", body.Username, body.Password),
+	})
 }
