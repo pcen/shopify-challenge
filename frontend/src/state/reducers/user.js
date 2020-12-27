@@ -1,18 +1,21 @@
 // User Reducer
 
-const INITIAL_USER_STATE = {
-  Username: '',
-  Password: '',
-  LoggedIn: false,
-  JWT: '',
+const USER_LOGGED_OUT = {
+  loggedIn: false,
+  username: '',
+  authToken: '',
 };
 
-const userReducer = (state = INITIAL_USER_STATE, action) => {
+const userReducer = (state = USER_LOGGED_OUT, action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
-      return { loggedIn: true };
+      return {
+        loggedIn: true,
+        username: action.user.username,
+        authToken: action.user.authToken,
+      };
     case 'LOGIN_FAILURE':
-      return { loggedIn: false };
+      return USER_LOGGED_OUT;
     default:
       return state;
   }

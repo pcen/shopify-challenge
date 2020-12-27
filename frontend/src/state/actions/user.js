@@ -14,8 +14,11 @@ const login = (username, password) => {
 
   return dispatch => {
     postJSON('/login', { username, password }).then(r => {
-      let action = r.success ? success : failure;
-      dispatch(action(r.message));
+      if (r.success) {
+        dispatch(success(r.user));
+      } else {
+        dispatch(failure(r.error));
+      }
     })
   }
 }

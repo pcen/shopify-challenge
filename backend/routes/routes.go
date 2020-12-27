@@ -16,4 +16,5 @@ func AttachAll(app *gin.Engine) {
 	app.GET("/", routeHome)
 	app.GET("/status", routeStatus)
 	app.POST("/login", routeLogin)
+	app.GET("/images", routeImages)
 }
