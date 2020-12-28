@@ -1,9 +1,9 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { useStore } from 'react-redux';
 
-import Routes, { Login } from './Routes';
+import Routes, { Login, AuthorizedRoute } from './Routes';
 
 const getBackendStatus = () => {
   let endpoint = '/status';
@@ -15,12 +15,9 @@ const App = props => {
 
   const handleClick = () => {
     let user = store.getState().user;
-    // console.log('current user:', user);
     fetch('/images', {
       method: 'GET',
-      headers: {
-        'Authorization': user.authToken,
-      },
+      headers: { 'Authorization': user.authToken, },
     }).then(r => r.json()).then(j => {
       console.log(j);
     })
@@ -34,16 +31,24 @@ const App = props => {
 
   return (
     <div className="App">
-      <Router>
+      <BrowserRouter>
         <Switch>
           <Route exact path='/' component={Login} />
-          {
-            Routes.map(r => <Route path={r.path} component={r.page} />)
-          }
+          {Routes.map(r => {
+            return (
+              <AuthorizedRoute
+                key={r.path}
+                path={r.path}
+                component={r.component}
+                useAuth={r.useAuth}
+              />
+            )
+          })}
         </Switch>
-      </Router>
+      </BrowserRouter>
 
-      <br /><br />
+      <br />
+      <br />
       <button onClick={handleClick}>
         Get Image Data
       </button>
