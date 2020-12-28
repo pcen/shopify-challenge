@@ -1,8 +1,9 @@
 import './App.css';
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { useStore } from 'react-redux';
 
-import LoginForm from './components/LoginForm';
+import Routes, { Login } from './Routes';
 
 const getBackendStatus = () => {
   let endpoint = '/status';
@@ -33,7 +34,15 @@ const App = props => {
 
   return (
     <div className="App">
-      <LoginForm />
+      <Router>
+        <Switch>
+          <Route exact path='/' component={Login} />
+          {
+            Routes.map(r => <Route path={r.path} component={r.page} />)
+          }
+        </Switch>
+      </Router>
+
       <br /><br />
       <button onClick={handleClick}>
         Get Image Data
