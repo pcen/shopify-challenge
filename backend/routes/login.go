@@ -37,7 +37,7 @@ func routeLogin(c *gin.Context) {
 
 	valid := validLogin(body.Username, body.Password)
 	authToken := ""
-	err := "Invalid credentials"
+	err := "invalid credentials"
 
 	if valid {
 		// Create JWT

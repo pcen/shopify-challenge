@@ -1,9 +1,10 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { useStore } from 'react-redux';
 
 import Routes, { Login, AuthorizedRoute } from './Routes';
+import { get } from './utils/requests';
 
 const getBackendStatus = () => {
   let endpoint = '/status';
@@ -15,11 +16,8 @@ const App = props => {
 
   const handleClick = () => {
     let user = store.getState().user;
-    fetch('/images', {
-      method: 'GET',
-      headers: { 'Authorization': user.authToken, },
-    }).then(r => r.json()).then(j => {
-      console.log(j);
+    get('/images', user.authToken).then(json => {
+      console.log(json);
     })
   }
 
@@ -33,7 +31,9 @@ const App = props => {
     <div className="App">
       <BrowserRouter>
         <Switch>
+          {/* Login page */}
           <Route exact path='/' component={Login} />
+          {/* Map route definitions in Routes.js */}
           {Routes.map(r => {
             return (
               <AuthorizedRoute
@@ -44,6 +44,10 @@ const App = props => {
               />
             )
           })}
+          {/* Undefined routes redirect to home page */}
+          <Route>
+            <Redirect to='/home' />
+          </Route>
         </Switch>
       </BrowserRouter>
 

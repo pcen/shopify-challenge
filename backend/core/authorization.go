@@ -46,8 +46,10 @@ func TokenValid(authToken string) bool {
 	return err == nil && claimsOk && token.Valid
 }
 
-// RequestAuthorized returns true if the request in the passed gin Context
-// supplies valid authorization, and returns false if it does not.
-func RequestAuthorized(c *gin.Context) bool {
+// RequestTokenValid returns true if the request in the passed gin Context
+// supplies a valid authorization token, and returns false if it does not.
+// This method is only used to check validity of JWTs, not if the requester
+// has sufficient permissions to access a resource.
+func RequestTokenValid(c *gin.Context) bool {
 	return TokenValid(c.GetHeader("Authorization"))
 }

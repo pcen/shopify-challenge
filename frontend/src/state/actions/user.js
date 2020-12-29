@@ -8,6 +8,7 @@ const UserActionTypes = {
   Logout: 'LOGOUT',
 }
 
+// Attempt to login user with given credentials.
 const login = (username, password) => {
 
   const success = user => {
@@ -33,6 +34,7 @@ const login = (username, password) => {
   }
 }
 
+// Logout user on client side.
 const logout = () => {
   localStorage.removeItem('user');
   return { type: UserActionTypes.Logout };
