@@ -1,13 +1,13 @@
 package models
 
-// Login data
-type Login struct {
+// UserLogin Model
+type UserLogin struct {
 	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	PasswordHash string `json:"password" binding:"required"`
 }
 
-// User session data
-type User struct {
+// UserSession Model
+type UserSession struct {
 	Username string `json:"username" binding:"required"`
 	AuthToken string `json:"authToken" binding:"required"`
 }

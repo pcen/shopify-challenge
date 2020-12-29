@@ -1,4 +1,4 @@
-package routes
+package core
 
 import (
 	"fmt"
@@ -11,8 +11,8 @@ func getSigningKey() []byte {
 	return []byte("secret")
 }
 
-// newToken returns a new signed JWT string
-func newToken(username string) (string, string) {
+// NewToken returns a new signed JWT string
+func NewToken(username string) (string, string) {
 	errorMsg := ""
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": username,
@@ -26,8 +26,8 @@ func newToken(username string) (string, string) {
 	return tokenStr, errorMsg
 }
 
-// tokenValid returns true if the passed JWT string is valid
-func tokenValid(authToken string) bool {
+// TokenValid returns true if the passed JWT string is valid
+func TokenValid(authToken string) bool {
 	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Invalid signing method %v", token.Header["alg"])

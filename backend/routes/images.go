@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"image-repo/core"
 )
 
 // routeImages handles get requests to '/images'
 func routeImages(c *gin.Context) {
-	authorized := tokenValid(c.GetHeader("Authorization"))
+	authorized := core.TokenValid(c.GetHeader("Authorization"))
 	// Reject unauthorized requests
 	if !authorized {
 		c.JSON(http.StatusUnauthorized, gin.H{
