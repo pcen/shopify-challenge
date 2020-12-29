@@ -16,6 +16,7 @@ const (
 // User Model
 type User struct {
 	gorm.Model
+
 	Username string
 	PasswordHash string
 	Role UserRole

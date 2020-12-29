@@ -2,12 +2,13 @@ package models
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"runtime"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"image-repo/core"
 )
 
 // populateTestData adds test data to the database
@@ -27,47 +28,38 @@ func populateTestData(db *gorm.DB) {
 	)
 }
 
-// parentDir returns the 'level'th parent of the filepath
-func parentDir(path string, level int) string {
-	for i := 0; i < level; i++ {
-		path = filepath.Dir(path)
-	}
-	parent, _ := filepath.Abs(path)
-	return parent
-}
-
-// getDatabaseDir returns the absolute path to the database directory
+// getDatabaseDir returns the absolute path to the database directory. It will
+// create the directory if it does not already exist.
 func getDatabaseDir() string {
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("failed to get caller information")
 	}
-	// the project's root directory is 3 levels up from files
-	// inside the models directory
-	rootDir := parentDir(file, 3)
-	return filepath.Join(rootDir, "database")
+	// the project's root directory is 3 levels up from files inside the models
+	// directory
+	rootDir := core.ParentDir(file, 3)
+	dbDir := filepath.Join(rootDir, "database")
+	core.EnsureDirExists(dbDir)
+	return dbDir
 }
 
-// getDatabaseFilepath returns the absolute path to the SQL database
-// containing user data and image metadata. If the database file
-// does not exist, it will be created when the gorm connection to the
-// database is opened.
+// getDatabaseFilepath returns the absolute path to the SQL database containing
+// user data and image metadata. If the database file does not exist, it will
+// be created when the gorm connection to the database is opened.
 func getDatabaseFilepath() string {
 	return filepath.Join(getDatabaseDir(), "metadata.db")
 }
 
-// getImagesDir returns the absolute path to the directory containing
-// all of the image files in the image repository. It will create the
-// directory if it does not already exist.
+// getImagesDir returns the absolute path to the directory containing all of
+// the image files in the image repository. It will create the directory if it
+// does not already exist.
 func getImagesDir() string {
 	imagesDir := filepath.Join(getDatabaseDir(), "images")
-	if _, err := os.Stat(imagesDir); os.IsNotExist(err) {
-		os.Mkdir(imagesDir, 0700)
-	}
+	core.EnsureDirExists(imagesDir)
 	return imagesDir
 }
 
-// GetDatabaseHandle returns the database handle
+// GetDatabaseHandle returns the database handle.
 func GetDatabaseHandle() *gorm.DB {
 	dbPath := getDatabaseFilepath()
 	imagesDir := getImagesDir()
