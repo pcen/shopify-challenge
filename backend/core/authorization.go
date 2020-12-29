@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 // signingKey is the secret key used to sign JWTs.
@@ -43,4 +44,10 @@ func TokenValid(authToken string) bool {
 	}
 	_, claimsOk := token.Claims.(jwt.MapClaims)
 	return err == nil && claimsOk && token.Valid
+}
+
+// RequestAuthorized returns true if the request in the passed gin Context
+// supplies valid authorization, and returns false if it does not.
+func RequestAuthorized(c *gin.Context) bool {
+	return TokenValid(c.GetHeader("Authorization"))
 }

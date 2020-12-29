@@ -1,29 +1,41 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"image-repo/core"
-	"image-repo/models"
+	. "image-repo/models"
 )
 
 // validLogin returns true if the username password combination
 // is a valid set of credentials
 func validLogin(username string, password string) bool {
-	return username == "user" && password == "password"
+	var user User
+	result := DB.Model(&User{}).Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		fmt.Println("Login user query failed with error", result.Error.Error())
+		return false
+	}
+	fmt.Printf(
+		"Login user query succeeded, comparing DB password %s to login password %s\n",
+		user.PasswordHash,
+		password,
+	)
+	return core.PasswordEqualsHashed(password, user.PasswordHash)
 }
 
 // routeLogin handles post requests to '/login'
 func routeLogin(c *gin.Context) {
-	var body models.User
+	var body UserLogin
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	valid := validLogin(body.Username, body.PasswordHash)
+	valid := validLogin(body.Username, body.Password)
 	authToken := ""
 	err := "Invalid credentials"
 
@@ -34,7 +46,7 @@ func routeLogin(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": valid,
-		"user": models.UserSession{
+		"user": UserSession{
 			Username:  body.Username,
 			AuthToken: authToken,
 		},

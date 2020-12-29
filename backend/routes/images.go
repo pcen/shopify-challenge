@@ -10,9 +10,8 @@ import (
 
 // routeImages handles get requests to '/images'
 func routeImages(c *gin.Context) {
-	authorized := core.TokenValid(c.GetHeader("Authorization"))
 	// Reject unauthorized requests
-	if !authorized {
+	if !core.RequestAuthorized(c) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Unauthorized request",
 		})
@@ -24,5 +23,4 @@ func routeImages(c *gin.Context) {
 			"image 1": "image 1 data",
 		},
 	})
-
 }

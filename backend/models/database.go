@@ -15,8 +15,9 @@ import (
 var DB *gorm.DB
 
 // populateTestData adds test data to the database
+// TODO: move test data generation to separate file
 func populateTestData(db *gorm.DB) {
-	db.Create(&User{Username: "Paul", PasswordHash: "12345", Role: Admin})
+	db.Create(&User{Username: "admin", PasswordHash: core.SaltAndHash("password"), Role: Admin})
 	db.Create(
 		&ImageMetadata{
 			UserID:         1,
