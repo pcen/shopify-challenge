@@ -8,11 +8,7 @@ import (
 )
 
 func main() {
-	db := models.GetDatabaseHandle()
-	if db == nil {
-		panic("db handle is nil")
-	}
-	return
+	models.InitializeDatabase()
 
 	// Initialize gin Engine
 	// app := gin.Default()

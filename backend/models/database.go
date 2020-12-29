@@ -11,6 +11,9 @@ import (
 	"image-repo/core"
 )
 
+// DB is the database handle for backend CRUD functions.
+var DB *gorm.DB
+
 // populateTestData adds test data to the database
 func populateTestData(db *gorm.DB) {
 	db.Create(&User{Username: "Paul", PasswordHash: "12345", Role: Admin})
@@ -26,6 +29,7 @@ func populateTestData(db *gorm.DB) {
 			DifferenceHash: 54321,
 		},
 	)
+	fmt.Println("done adding test data to db")
 }
 
 // getDatabaseDir returns the absolute path to the database directory. It will
@@ -59,22 +63,21 @@ func getImagesDir() string {
 	return imagesDir
 }
 
-// GetDatabaseHandle returns the database handle.
-func GetDatabaseHandle() *gorm.DB {
+// InitializeDatabase sets
+func InitializeDatabase() {
 	dbPath := getDatabaseFilepath()
 	imagesDir := getImagesDir()
 
 	fmt.Println(dbPath)
 	fmt.Println(imagesDir)
 
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to database")
 	}
 
-	db.AutoMigrate(&User{}, &ImageMetadata{})
+	DB.AutoMigrate(&User{}, &ImageMetadata{})
 
-	populateTestData(db)
-
-	return db
+	populateTestData(DB)
 }

@@ -7,8 +7,12 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func getSigningKey() []byte {
-	return []byte("secret")
+// signingKey is the secret key used to sign JWTs.
+const signingKey = "secret"
+
+// GetSigningKey returns the signing key for JWTs.
+func GetSigningKey() []byte {
+	return []byte(signingKey)
 }
 
 // NewToken returns a new signed JWT string
@@ -18,7 +22,7 @@ func NewToken(username string) (string, string) {
 		"sub": username,
 		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	})
-	tokenStr, err := token.SignedString(getSigningKey())
+	tokenStr, err := token.SignedString(GetSigningKey())
 	if err != nil {
 		fmt.Println(err)
 		errorMsg = err.Error()
@@ -32,7 +36,7 @@ func TokenValid(authToken string) bool {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Invalid signing method %v", token.Header["alg"])
 		}
-		return getSigningKey(), nil
+		return GetSigningKey(), nil
 	})
 	if err != nil {
 		return false

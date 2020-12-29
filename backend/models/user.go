@@ -17,10 +17,9 @@ const (
 type User struct {
 	gorm.Model
 
-	Username string
-	PasswordHash string
-	Role UserRole
-
+	Username       string `gorm:"unique"`
+	PasswordHash   string
+	Role           UserRole
 	// User has many ImageMetadata
 	ImageMetadatas []ImageMetadata
 }
