@@ -1,15 +1,10 @@
 import './App.css';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { useStore } from 'react-redux';
 
 import Routes, { Login, AuthorizedRoute } from './Routes';
 import { get } from './utils/requests';
-
-const getBackendStatus = () => {
-  let endpoint = '/status';
-  return fetch(endpoint).then(r => r.text());
-}
 
 const App = props => {
   const store = useStore();
@@ -20,12 +15,6 @@ const App = props => {
       console.log(json);
     })
   }
-
-  useEffect(() => {
-    getBackendStatus().then(text => {
-      console.log(text);
-    });
-  }, []);
 
   return (
     <div className="App">

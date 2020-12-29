@@ -6,14 +6,15 @@
 // the Redux store. Since there is no longer a user JWT, reloading the page
 // will also redirect to the login page.
 const checkAuthStatus = response => {
-  if (!response.ok && response.status === 401) {
-    response.json().then(json => {
-      if (json.error === 'token invalid') {
+  return response.json().then(json => {
+    if (!response.ok && response.status === 401) {
+      if (json && json.error === 'token invalid') {
         localStorage.removeItem('user');
         window.location.reload();
       }
-    })
-  }
+    }
+    return json;
+  });
 }
 
 // Posts the 'payload' object to the given endpoint as JSON.
@@ -31,8 +32,7 @@ async function postJSON(endpoint, payload, jwt) {
     headers,
     body: JSON.stringify(payload),
   });
-  checkAuthStatus(response);
-  return response.json();
+  return checkAuthStatus(response);
 }
 
 // Gets response as JSON from the given endpoint.
@@ -47,8 +47,7 @@ async function get(endpoint, jwt) {
     method: 'GET',
     headers,
   });
-  checkAuthStatus(response);
-  return response.json();
+  return checkAuthStatus(response);
 }
 
 export { get, postJSON }

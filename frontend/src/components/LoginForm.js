@@ -23,8 +23,7 @@ const LoginForm = props => {
   // True if both username and password are not empty
   const dataIsValid = () => username.length !== 0 && password.length !== 0;
 
-  // Sends POST request containing username and password to the backend
-  // FIXME: send password hash instead of plain text
+  // Sends post request containing username and password to the backend
   const submitData = () => {
     if (dataIsNew()) {
       setPrev({ username, password });
