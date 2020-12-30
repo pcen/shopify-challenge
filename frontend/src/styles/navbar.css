@@ -4,7 +4,7 @@
   display: flex;
   justify-content: flex-end;
   padding: 10px 30px 10px 0px;
-  background-color: var(--background-blue);
+  background-color: whitesmoke;
 }
 
 .navbar > * {

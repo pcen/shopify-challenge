@@ -15,6 +15,7 @@ const Links = [
   },
 ]
 
+// Navbar component provides links to each page site.
 const Navbar = props => {
   const location = useLocation();
 

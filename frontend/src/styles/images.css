@@ -1,0 +1,11 @@
+.image-preview-container {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	padding: 0px 20px 0px 20px;
+	gap: 15px 15px;
+}
+
+.image-preview {
+	width: 100%;
+	height: auto;
+}
