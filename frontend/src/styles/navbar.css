@@ -1,0 +1,28 @@
+@import './colours.css';
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 30px 10px 0px;
+  background-color: var(--background-blue);
+}
+
+.navbar > * {
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 0px 30px 0px 30px;
+}
+
+.current-link {
+  text-decoration: underline;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

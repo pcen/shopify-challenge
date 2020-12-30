@@ -4,6 +4,8 @@ import { useDispatch, connect } from 'react-redux';
 
 import { login } from '../state/actions/user';
 
+import '../styles/login.css';
+
 // LoginForm accepts a username and password as input, and will
 // send the entered credentials to the backend upon form submission
 const LoginForm = props => {
@@ -42,17 +44,16 @@ const LoginForm = props => {
     return (<Redirect to='/home' />);
   } else {
     return (
-      <React.Fragment>
-        <h1>Login</h1>
-        <form onSubmit={submitData} onKeyPress={handleKeyPress} >
-          <label htmlFor='uname'>Username:</label>
-          <br />
+      <form className='login-form' onSubmit={submitData} onKeyPress={handleKeyPress} >
+        <div>
+          <label>Username:</label>
           <input type='text' name='uname' onChange={e => setUsername(e.target.value)} />
-          <br />
-          <label htmlFor='pword'>Password:</label><br />
-          <input type='password' name='pname' onChange={e => setPassword(e.target.value)} />
-        </form>
-      </React.Fragment>
+        </div>
+        <div>
+          <label>Password:</label>
+          <input type='password' onChange={e => setPassword(e.target.value)} />
+        </div>
+      </form>
     )
   }
 }

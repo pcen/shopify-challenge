@@ -3,12 +3,16 @@ import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import Routes, { Login, AuthorizedRoute } from './Routes';
+import Navbar from './components/Navbar';
 
 const App = props => {
 
   return (
     <div className="App">
       <BrowserRouter>
+        {/* Navigation Bar */}
+        <Navbar />
+
         <Switch>
           {/* Login page */}
           <Route exact path='/' component={Login} />

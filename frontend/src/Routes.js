@@ -3,8 +3,9 @@ import { useStore } from 'react-redux';
 
 // Import page components
 import Home from './pages/Home';
+import Image from './pages/Image';
 import Login from './pages/Login';
-
+import Upload from './pages/Upload';
 
 const AuthorizedRoute = props => {
   const { path, component, useAuth } = props;
@@ -20,6 +21,16 @@ const Routes = [
   {
     path: '/home',
     component: Home,
+    useAuth: true,
+  },
+  {
+    path: '/image',
+    component: Image,
+    useAuth: true,
+  },
+  {
+    path: '/upload',
+    component: Upload,
     useAuth: true,
   },
 ]

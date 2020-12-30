@@ -1,13 +1,14 @@
-import React from 'react';
-
 import LoginForm from '../components/LoginForm';
+
+import '../styles/login.css';
 
 // Login Page
 const Login = props => {
   return (
-    <React.Fragment>
+    <div className='login'>
+      <h1>Login</h1>
       <LoginForm />
-    </React.Fragment>
+    </div>
   )
 }
 

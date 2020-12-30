@@ -4,6 +4,8 @@ import { useDispatch, connect } from 'react-redux';
 
 import { logout } from '../state/actions/user';
 
+import '../styles/navbar.css';
+
 // LogoutButton logs the user out, removing their credentials from
 // Redux store and browser storage
 const LogoutButton = props => {
@@ -20,11 +22,9 @@ const LogoutButton = props => {
     return (<Redirect to='/' />);
   } else {
     return (
-      <React.Fragment>
-        <button onClick={handleLogout}>
-          Logout
-      </button>
-      </React.Fragment>
+      <div className='link' onClick={handleLogout}>
+        Logout
+      </div>
     )
   }
 }
