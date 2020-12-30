@@ -17,16 +17,25 @@ const checkAuthStatus = response => {
   });
 }
 
-// Posts the 'payload' object to the given endpoint as JSON.
-// jwt is an optional parameter that is set as the Authorization if it is
-// passed to the function call.
-async function postJSON(endpoint, payload, jwt) {
-  let headers = {
-    'Content-Type': 'application/json',
-  };
-  if (jwt !== undefined) {
-    headers.Authorization = jwt;
+// addAuth adds an 'Authorization' header to the passed headers object if a
+// user object exists in local storage.
+const addAuth = headers => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user != null) {
+    return {
+      ...headers,
+      Authorization: user.authToken,
+    };
+  } else {
+    return headers;
   }
+}
+
+// Posts the 'payload' object to the given endpoint as JSON.
+async function postJSON(endpoint, payload) {
+  const headers = addAuth({
+    'Content-Type': 'application/json',
+  });
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,
@@ -36,13 +45,8 @@ async function postJSON(endpoint, payload, jwt) {
 }
 
 // Gets response as JSON from the given endpoint.
-// jwt is an optional parameter that is set as the Authorization if it is
-// passed to the function call.
-async function get(endpoint, jwt) {
-  let headers = {};
-  if (jwt !== undefined) {
-    headers.Authorization = jwt;
-  }
+async function get(endpoint) {
+  const headers = addAuth({});
   const response = await fetch(endpoint, {
     method: 'GET',
     headers,

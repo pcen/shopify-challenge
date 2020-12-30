@@ -9,6 +9,7 @@ type ImageMetadata struct {
 	gorm.Model
 
 	UserID         uint   // Foreign key to the image owner
+	Name           string // Image name
 	Filepath       string `gorm:"unique"` // Path to the image file
 	Description    string // A description of the image
 	Geolocation    string // The image's geolocation

@@ -8,20 +8,16 @@ import (
 	"image-repo/core"
 )
 
-// routeStatus always returns 200 if the application is running
-func routeStatus(c *gin.Context) {
-	c.String(http.StatusOK, "running")
-}
-
 // routeHome handles get requests to '/'
 func routeHome(c *gin.Context) {
-	c.String(http.StatusOK, "home")
+	c.String(http.StatusOK, "image-repo backend running")
 }
 
 // routeCheckAuthToken handles get requests to '/check-auth' and responds
 // indicating if the request was made with a valid JWT or not.
 func routeCheckAuthToken(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"valid": core.RequestTokenValid(c)})
+	valid, _ := core.RequestTokenValid(c)
+	c.JSON(http.StatusOK, gin.H{"valid": valid})
 }
 
 // authMiddleware checks if incoming requests are authorized and will reject
@@ -29,9 +25,10 @@ func routeCheckAuthToken(c *gin.Context) {
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// return an unauthorized response if the request is not authorized
-		if !core.RequestTokenValid(c) {
+		valid, err := core.RequestTokenValid(c)
+		if !valid {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "token invalid",
+				"error": err,
 			})
 			c.Abort()
 			return
@@ -45,7 +42,6 @@ func authMiddleware() gin.HandlerFunc {
 func AttachAll(app *gin.Engine) {
 	// Public endpoints
 	app.GET("/", routeHome)
-	app.GET("/status", routeStatus)
 	app.GET("/check-auth", routeCheckAuthToken)
 	app.POST("/login", routeLogin)
 

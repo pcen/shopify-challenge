@@ -50,6 +50,13 @@ func TokenValid(authToken string) bool {
 // supplies a valid authorization token, and returns false if it does not.
 // This method is only used to check validity of JWTs, not if the requester
 // has sufficient permissions to access a resource.
-func RequestTokenValid(c *gin.Context) bool {
-	return TokenValid(c.GetHeader("Authorization"))
+func RequestTokenValid(c *gin.Context) (bool, string) {
+	if c.GetHeader("Authorization") == "" {
+		return false, "token missing"
+	}
+	valid := TokenValid(c.GetHeader("Authorization"))
+	if !valid {
+		return valid, "token invalid"
+	}
+	return valid, ""
 }
