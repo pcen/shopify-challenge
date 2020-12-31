@@ -1,6 +1,8 @@
 package models
 
 import (
+	"mime/multipart"
+
 	"gorm.io/gorm"
 )
 
@@ -17,4 +19,12 @@ type ImageMetadata struct {
 	Public         bool   // Image visibility (public or private)
 	AverageHash    uint64 // Perceptual hash
 	DifferenceHash uint64 // Perceptual hash
+}
+
+// ImageMultipart Form Model
+type ImageMultipart struct {
+	Image       *multipart.FileHeader `form:"image" binding:"required"`
+	Description string                `form:"description"`
+	Location    string                `form:"location"`
+	Private     bool                  `form:"private" binding:"required"`
 }

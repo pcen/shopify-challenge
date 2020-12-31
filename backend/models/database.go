@@ -55,10 +55,10 @@ func getDatabaseFilepath() string {
 	return filepath.Join(getDatabaseDir(), "metadata.db")
 }
 
-// getImagesDir returns the absolute path to the directory containing all of
+// GetImagesDir returns the absolute path to the directory containing all of
 // the image files in the image repository. It will create the directory if it
 // does not already exist.
-func getImagesDir() string {
+func GetImagesDir() string {
 	imagesDir := filepath.Join(getDatabaseDir(), "images")
 	core.EnsureDirExists(imagesDir)
 	return imagesDir
@@ -67,7 +67,7 @@ func getImagesDir() string {
 // InitializeDatabase sets
 func InitializeDatabase() {
 	dbPath := getDatabaseFilepath()
-	imagesDir := getImagesDir()
+	imagesDir := GetImagesDir()
 
 	fmt.Println(dbPath)
 	fmt.Println(imagesDir)

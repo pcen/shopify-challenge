@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-import UploadButton from '../components/UploadButton';
+import { UploadToBackend, UploadToClient } from '../components/UploadButtons';
 import PreviewGallery from '../components/PreviewGallery';
+import { postImage } from '../utils/requests';
 
 import '../styles/images.css';
 
@@ -14,6 +15,7 @@ const newImageMetadata = file => {
     private: true,
     source: URL.createObjectURL(file),
     type: file.type,
+    file: file,
   }
 }
 
@@ -51,6 +53,20 @@ const Upload = props => {
     setUpdate(!update);
   }
 
+  const handleSend = () => {
+    console.log('sending images to backend...');
+    for (let image of images.values()) {
+      postImage('/upload', image).then(
+        json => {
+          console.log(json);
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
+  }
+
   return (
     <React.Fragment>
       <h1 style={{ margin: '5px 0px 5px 0px' }}>Upload Images</h1>
@@ -60,7 +76,14 @@ const Upload = props => {
         changes.
       </div>
       <br></br>
-      <UploadButton title='Choose Images' onUpload={handleUpload}></UploadButton>
+      <UploadToClient
+        title='Choose Images'
+        onUpload={handleUpload}
+      />
+      <UploadToBackend
+        title='Upload'
+        onUpload={handleSend}
+      />
       <br /><br />
       <PreviewGallery
         images={images}

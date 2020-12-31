@@ -47,4 +47,5 @@ func AttachAll(app *gin.Engine) {
 
 	// Authorization protected endpoints
 	app.GET("/images", authMiddleware(), routeImages)
+	app.POST("/upload", authMiddleware(), routeUpload)
 }

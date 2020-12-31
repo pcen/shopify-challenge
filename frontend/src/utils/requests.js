@@ -14,6 +14,8 @@ const checkAuthStatus = response => {
       }
     }
     return json;
+  }).catch(() => {
+    return Promise.reject("response body is not JSON");
   });
 }
 
@@ -54,4 +56,27 @@ async function get(endpoint) {
   return checkAuthStatus(response);
 }
 
-export { get, postJSON }
+// Creates multipart form data for a given image.
+const imageFormData = image => {
+  let fd = new FormData();
+  fd.set('image', image.file, image.name);
+  fd.set('description', image.description);
+  fd.set('location', image.location);
+  fd.set('private', image.private);
+  return fd;
+}
+
+// Posts an image to the given endpoint as multipart form data.
+async function postImage(endpoint, image) {
+  // Browser will add Content-Type header
+  // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+  const headers = addAuth({});
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body: imageFormData(image),
+  })
+  return checkAuthStatus(response);
+}
+
+export { get, postJSON, postImage }

@@ -22,6 +22,8 @@
   background-color: white;
   width: 95%;
   text-align: center;
+  padding-bottom: 0.1rem;
+  -webkit-user-select: none;
 }
 
 .preview-button-disabled {
@@ -31,6 +33,8 @@
   background-color: whitesmoke;
   width: 95%;
   text-align: center;
+  padding-bottom: 0.1rem;
+  -webkit-user-select: none;
 }
 
 .preview-button:hover {
@@ -51,6 +55,7 @@
 /* Edit Image Metadata Modal */
 .edit-details-modal {
   font-size: 14px;
+  border: 1px solid black;
   width: 80vw;
   background-color: whitesmoke;
   border-radius: 10px;
@@ -82,7 +87,7 @@
   font-size: 24px;
   background-color: white;
   border-radius: 18px;
-  border: 1px solid #cfcece;
+  border: 1px solid black;
 }
 
 /* Edit Image Input */
@@ -97,8 +102,7 @@
 .edit-input {
   font-size: 12pt;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   background-color: white;
   border: 1px solid black;
   border-radius: 6px;
@@ -109,7 +113,7 @@
   line-height: 20px;
 }
 
-/* Edit Image Buttons */
+/* Edit Image Buttons Region */
 .edit-actions {
   display: grid;
   grid-template-columns: auto auto auto;
