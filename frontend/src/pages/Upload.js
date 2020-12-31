@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { UploadToBackend, UploadToClient } from '../components/UploadButtons';
 import PreviewGallery from '../components/PreviewGallery';
-import { postImage } from '../utils/requests';
+import { postImages } from '../utils/requests';
 
 import '../styles/images.css';
 
@@ -54,17 +54,10 @@ const Upload = props => {
   }
 
   const handleSend = () => {
-    console.log('sending images to backend...');
-    for (let image of images.values()) {
-      postImage('/upload', image).then(
-        json => {
-          console.log(json);
-        },
-        error => {
-          console.log(error);
-        }
-      )
-    }
+    postImages('/upload', images).then(
+      json => { console.log(json); },
+      error => { console.log(error); }
+    );
   }
 
   return (

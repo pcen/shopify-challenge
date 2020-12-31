@@ -57,26 +57,35 @@ async function get(endpoint) {
 }
 
 // Creates multipart form data for a given image.
-const imageFormData = image => {
+const imagesFormData = images => {
   let fd = new FormData();
-  fd.set('image', image.file, image.name);
-  fd.set('description', image.description);
-  fd.set('location', image.location);
-  fd.set('private', image.private);
+  let meta = [];
+  for (let image of images.values()) {
+    fd.set(image.name, image.file, image.name);
+    meta.push({
+      name: image.name,
+      description: image.description,
+      location: image.location,
+      private: image.private,
+      type: image.file.type,
+    });
+  }
+  fd.set('meta', JSON.stringify(meta));
   return fd;
 }
 
-// Posts an image to the given endpoint as multipart form data.
-async function postImage(endpoint, image) {
+// Posts images to the given endpoint as multipart form data. Image metadata is
+// sent as a JSON string.
+async function postImages(endpoint, images) {
   // Browser will add Content-Type header
   // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
   const headers = addAuth({});
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,
-    body: imageFormData(image),
+    body: imagesFormData(images),
   })
   return checkAuthStatus(response);
 }
 
-export { get, postJSON, postImage }
+export { get, postJSON, postImages }
