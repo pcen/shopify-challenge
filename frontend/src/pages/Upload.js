@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
 
 import UploadButton from '../components/UploadButton';
-import ImagesPreview from '../components/ImagesPreview';
+import PreviewGallery from '../components/PreviewGallery';
 
 import '../styles/images.css';
+
+// newImageMetadata returns an image metadata object given a file object.
+const newImageMetadata = file => {
+  return {
+    name: file.name,
+    description: '',
+    location: '',
+    private: true,
+    source: URL.createObjectURL(file),
+    type: file.type,
+  }
+}
 
 // Upload Images Page
 const Upload = props => {
@@ -18,9 +30,8 @@ const Upload = props => {
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const f = files.item(i);
-      f.source = URL.createObjectURL(f);
       if (!images.has(f.name)) {
-        images.set(f.name, f);
+        images.set(f.name, newImageMetadata(f));
         added = true;
       }
     }
@@ -29,14 +40,33 @@ const Upload = props => {
     }
   }
 
+  const handleRemove = name => {
+    if (images.delete(name)) {
+      setUpdate(!update);
+    }
+  }
+
+  const handleEdit = changes => {
+    images.set(changes.name, changes);
+    setUpdate(!update);
+  }
+
   return (
     <React.Fragment>
-      <h1>Upload</h1>
-      <div>Upload images to preview and add them to repository</div>
-      <br />
+      <h1 style={{ margin: '5px 0px 5px 0px' }}>Upload Images</h1>
+      <div style={{ padding: '0px 40px 0px 40px' }}>
+        Upload images to preview and add them to your repository. To add
+        information about images, click metadata and then edit to make
+        changes.
+      </div>
+      <br></br>
       <UploadButton title='Choose Images' onUpload={handleUpload}></UploadButton>
       <br /><br />
-      <ImagesPreview previewImages={images} />
+      <PreviewGallery
+        images={images}
+        removeImage={handleRemove}
+        editImage={handleEdit}
+      />
     </React.Fragment>
   )
 }
