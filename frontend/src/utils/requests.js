@@ -67,7 +67,7 @@ const imagesFormData = images => {
       description: image.description,
       location: image.location,
       private: image.private,
-      type: image.file.type,
+      format: image.file.type,
     });
   }
   fd.set('meta', JSON.stringify(meta));

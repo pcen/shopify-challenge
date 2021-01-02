@@ -31,14 +31,20 @@ func NewToken(username string) (string, string) {
 	return tokenStr, errorMsg
 }
 
-// TokenValid returns true if the passed JWT string is valid
-func TokenValid(authToken string) bool {
+// parseToken returns a JWT from the given token string.
+func parseToken(authToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Invalid signing method %v", token.Header["alg"])
 		}
 		return GetSigningKey(), nil
 	})
+	return token, err
+}
+
+// TokenValid returns true if the passed JWT string is valid
+func TokenValid(authToken string) bool {
+	token, err := parseToken(authToken)
 	if err != nil {
 		return false
 	}
@@ -59,4 +65,17 @@ func RequestTokenValid(c *gin.Context) (bool, string) {
 		return valid, "token invalid"
 	}
 	return valid, ""
+}
+
+// GetTokenUser returns the username of the user to whom a JWT was issued.
+func GetTokenUser(authToken string) (string, error) {
+	token, err := parseToken(authToken)
+	if err != nil {
+		return "", err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		return claims["sub"].(string), nil
+	}
+	return "", fmt.Errorf("failed to extract claims from jwt")
 }

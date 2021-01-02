@@ -6,7 +6,6 @@ import (
 
 // UserRole Enumeration
 type UserRole int
-
 const (
 	None UserRole = iota
 	RegularUser

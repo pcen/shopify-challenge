@@ -10,11 +10,12 @@ type ImageMetadata struct {
 
 	UserID         uint   // Foreign key to the image owner
 	Name           string // Image name
-	Filepath       string `gorm:"unique"` // Path to the image file
+	Format         string // Image format
+	FileStore      string `gorm:"unique"` // Filename of image in database
 	Description    string // A description of the image
 	Geolocation    string // The image's geolocation
 	OCRText        string // OCR text from image
-	Public         bool   // Image visibility (public or private)
+	Private        bool   // Image visibility (public or private)
 	AverageHash    uint64 // Perceptual hash
 	DifferenceHash uint64 // Perceptual hash
 }
@@ -22,6 +23,7 @@ type ImageMetadata struct {
 // ImageUploadMeta Model
 type ImageUploadMeta struct {
 	Name        string `json:"name" binding:"required"`
+	Format      string `json:"format" binding:"required"`
 	Description string `json:"description"`
 	Location    string `json:"location"`
 	Private     bool   `json:"private" binding:"required"`

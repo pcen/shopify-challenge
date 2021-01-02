@@ -21,11 +21,13 @@ func populateTestData(db *gorm.DB) {
 	db.Create(
 		&ImageMetadata{
 			UserID:         1,
-			Filepath:       "file.jpg",
+			Name:           "file.jpg",
+			Format:         "image/jpeg",
+			FileStore:      "1232353634253.jpg",
 			Description:    "This is an image description.",
 			Geolocation:    "Paris, France",
 			OCRText:        "This is OCR text.",
-			Public:         true,
+			Private:        true,
 			AverageHash:    12345,
 			DifferenceHash: 54321,
 		},
@@ -71,6 +73,8 @@ func InitializeDatabase() {
 
 	fmt.Println(dbPath)
 	fmt.Println(imagesDir)
+
+	core.DeleteFile(dbPath)
 
 	var err error
 	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})

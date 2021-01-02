@@ -3,13 +3,12 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
+	"image-repo/core"
 	. "image-repo/models"
 )
 
@@ -24,35 +23,65 @@ func getImageUploadMetadata(c *gin.Context) ([]ImageUploadMeta, error) {
 // saveImages extracts uploaded image files from the request body and saves
 // them to the image repository. The metadata for each image is inserted into
 // the metadata database.
-func saveImages(c *gin.Context, meta []ImageUploadMeta) {
+func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
+
 	for _, m := range meta {
-		name := m.Name
-		fmt.Println(name)
-		image, _, err := c.Request.FormFile(name)
+		// Generate the name of the image file in the file registry
+		store := core.RandomAlphanumericString(32) + core.FileExtensionFromFormat(m.Format)
+
+		// Insert image metadata into SQL database
+		imageMetadata := ImageMetadata{
+			UserID:         user.ID,
+			Name:           m.Name,
+			Format:         m.Format,
+			FileStore:      store,
+			Description:    m.Description,
+			Geolocation:    m.Location,
+			OCRText:        "ocr text",
+			Private:        m.Private,
+			AverageHash:    0,
+			DifferenceHash: 0,
+		}
+
+		err := InsertImageMetadata(&imageMetadata)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		// Save image file to file registry
+		image, _, err := c.Request.FormFile(m.Name)
 		if err != nil {
 			panic(err.Error())
 		}
-		out, err := os.Create(filepath.Join(GetImagesDir(), name))
+
+		err = core.WriteFile(filepath.Join(GetImagesDir(), store), image)
 		if err != nil {
 			panic(err.Error())
 		}
-		defer out.Close()
-		_, err = io.Copy(out, image)
-		if err != nil {
-			panic(err.Error())
-		}
+
 	}
 }
 
 // routeUpload handles post requests to '/upload'
 func routeUpload(c *gin.Context) {
+
+	username, err := core.GetTokenUser(c.GetHeader("Authorization"))
+	if err != nil {
+		panic(err.Error())
+	}
+
+	user, err := GetUser(username)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	meta, err := getImageUploadMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid upload meta"})
 		return
 	}
 
-	saveImages(c, meta)
+	saveImages(c, meta, &user)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "upload successful",
