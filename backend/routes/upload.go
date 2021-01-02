@@ -24,7 +24,6 @@ func getImageUploadMetadata(c *gin.Context) ([]ImageUploadMeta, error) {
 // them to the image repository. The metadata for each image is inserted into
 // the metadata database.
 func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
-
 	for _, m := range meta {
 		// Generate the name of the image file in the file registry
 		store := core.RandomAlphanumericString(32) + core.FileExtensionFromFormat(m.Format)
@@ -65,25 +64,21 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 // routeUpload handles post requests to '/upload'
 func routeUpload(c *gin.Context) {
 
-	username, err := core.GetTokenUser(c.GetHeader("Authorization"))
+	// Get the user associated with the request's JWT
+	user, err := GetUserFromJWT(c.GetHeader("Authorization"))
 	if err != nil {
 		panic(err.Error())
 	}
 
-	user, err := GetUser(username)
-	if err != nil {
-		panic(err.Error())
-	}
-
+	// Get the metadata of the uploaded images from the request body
 	meta, err := getImageUploadMetadata(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid upload meta"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid upload metadata"})
 		return
 	}
 
+	// Save the uploaded images to the database
 	saveImages(c, meta, &user)
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "upload successful",
-	})
+	c.JSON(http.StatusOK, gin.H{"message": "upload successful"})
 }

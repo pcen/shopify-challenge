@@ -17,22 +17,11 @@ var DB *gorm.DB
 // populateTestData adds test data to the database
 // TODO: move test data generation to separate file
 func populateTestData(db *gorm.DB) {
-	db.Create(&User{Username: "admin", PasswordHash: core.SaltAndHash("password"), Role: Admin})
-	db.Create(
-		&ImageMetadata{
-			UserID:         1,
-			Name:           "file.jpg",
-			Format:         "image/jpeg",
-			FileStore:      "1232353634253.jpg",
-			Description:    "This is an image description.",
-			Geolocation:    "Paris, France",
-			OCRText:        "This is OCR text.",
-			Private:        true,
-			AverageHash:    12345,
-			DifferenceHash: 54321,
-		},
-	)
-	fmt.Println("done adding test data to db")
+	db.Create(&User{
+		Username:     "admin",
+		PasswordHash: core.SaltAndHash("password"),
+		Role:         Admin,
+	})
 }
 
 // getDatabaseDir returns the absolute path to the database directory. It will

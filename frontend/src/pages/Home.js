@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-import { get } from '../utils/requests';
+import { postJSON } from '../utils/requests';
 
 // Home Page
 const Home = props => {
   const [images, setImages] = useState({});
 
   const handleClick = () => {
-    get('/images').then(json => {
+    postJSON('/images', { image: 1 }).then(json => {
       setImages(json.images);
       console.log(json.images);
     })
@@ -24,7 +24,7 @@ const Home = props => {
         {Object.keys(images).length === 0 ?
           'No image data'
           :
-          images['image 1']
+          JSON.stringify(images)
         }
       </div>
     </React.Fragment>

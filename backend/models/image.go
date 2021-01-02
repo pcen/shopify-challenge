@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// ImageMetadata Model
+// ImageMetadata Database Model
 type ImageMetadata struct {
 	gorm.Model
 
@@ -20,7 +20,7 @@ type ImageMetadata struct {
 	DifferenceHash uint64 // Perceptual hash
 }
 
-// ImageUploadMeta Model
+// ImageUploadMeta JSON Model
 type ImageUploadMeta struct {
 	Name        string `json:"name" binding:"required"`
 	Format      string `json:"format" binding:"required"`
@@ -28,4 +28,9 @@ type ImageUploadMeta struct {
 	Location    string `json:"location"`
 	Private     bool   `json:"private" binding:"required"`
 	Type        string `json:"type" binding:"required"`
+}
+
+// ImageDownloadMeta JSON Model
+type ImageDownloadMeta struct {
+	Image       uint `json:"image" binding:"required"`
 }
