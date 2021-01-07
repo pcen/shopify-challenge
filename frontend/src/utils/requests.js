@@ -1,26 +1,49 @@
 // Utility functions for sending HTTP requests
 
 // checkAuthStatus checks to see if the backend response is a 401 unauthorized
-// response. If a 401 is recieved and the cause is an invalid token, then the
-// user data is removed from local storage and the page is reloaded to clear
-// the Redux store. Since there is no longer a user JWT, reloading the page
-// will also redirect to the login page.
-const checkAuthStatus = response => {
+// response. If a 401 is recieved, the user data is removed from local storage
+// and the page is reloaded to clear the Redux store. Since there is no longer
+// a user JWT, reloading the page will also redirect to the login page.
+const checkAuthStatus = (response) => {
+  if (!response.ok && response.status === 401) {
+    localStorage.removeItem('user');
+    window.location.reload();
+    return false;
+  }
+  return true;
+}
+
+// handleJSON returns the JSON response from a request, or a Promise.reject on
+// errors.
+const handleJSON = response => {
   return response.json().then(json => {
-    // Logout on 401 response
-    if (!response.ok && response.status === 401) {
-      if (json && json.error === 'token invalid') {
-        localStorage.removeItem('user');
-        window.location.reload();
-      }
-    // Return backend error on 400 response
-    } else if (!response.ok && response.status === 400) {
+    checkAuthStatus(response);
+    // Returns backend error on 400 response
+    if (!response.ok && response.status === 400) {
+      return Promise.reject(json.error);
+    }
+    // Returns backend error on 403 response
+    if (!response.ok && response.status === 403) {
       return Promise.reject(json.error);
     }
     return json;
   }).catch(() => {
-    return Promise.reject("response body is not JSON");
-  });
+    return Promise.reject("response body is not JSON")
+  })
+}
+
+// handleBlob returns the blob response from a request, or null on errors.
+const handleBlob = response => {
+  return response.blob().then(blob => {
+    checkAuthStatus(response)
+    // Returns null on errors
+    if (!response.ok) {
+      return null;
+    }
+    return blob;
+  }).catch(() => {
+    return null;
+  })
 }
 
 // addAuth adds an 'Authorization' header to the passed headers object if a
@@ -47,7 +70,19 @@ async function postJSON(endpoint, payload) {
     headers,
     body: JSON.stringify(payload),
   });
-  return checkAuthStatus(response);
+  return handleJSON(response);
+}
+
+// getImage gets the image with the specified id from the backend. Returns
+// image as a blob if valid, otherwise returns null.
+async function getImage(id) {
+  const headers = addAuth({});
+  let endpoint = '/image/'.concat(id.toString());
+  const response = await fetch(endpoint, {
+    method: 'GET',
+    headers,
+  });
+  return handleBlob(response);
 }
 
 // Gets response as JSON from the given endpoint.
@@ -57,7 +92,7 @@ async function get(endpoint) {
     method: 'GET',
     headers,
   });
-  return checkAuthStatus(response);
+  return handleJSON(response);
 }
 
 // Creates multipart form data for a given image.
@@ -89,7 +124,7 @@ async function postImages(endpoint, images) {
     headers,
     body: imagesFormData(images),
   })
-  return checkAuthStatus(response);
+  return handleJSON(response);
 }
 
-export { get, postJSON, postImages }
+export { get, postJSON, postImages, getImage }

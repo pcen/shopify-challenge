@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
 
-import { postJSON } from '../utils/requests';
+import ImageLoader from '../components/ImageLoader';
 
 // Home Page
 const Home = props => {
   const [images, setImages] = useState({});
 
+  const [imageID, setImageID] = useState(null);
+
   const handleClick = () => {
-    postJSON('/images', { image: 1 }).then(
-      json => {
-        setImages(json.images);
-        console.log(json.images);
-      },
-      error => {
-        setImages(error);
-      }
-    )
+    setImageID(1);
+    console.log('set image id');
   }
 
   return (
@@ -31,7 +26,9 @@ const Home = props => {
           :
           JSON.stringify(images)
         }
+        <ImageLoader id={imageID} />
       </div>
+
     </React.Fragment>
   )
 }
