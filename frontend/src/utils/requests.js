@@ -7,11 +7,15 @@
 // will also redirect to the login page.
 const checkAuthStatus = response => {
   return response.json().then(json => {
+    // Logout on 401 response
     if (!response.ok && response.status === 401) {
       if (json && json.error === 'token invalid') {
         localStorage.removeItem('user');
         window.location.reload();
       }
+    // Return backend error on 400 response
+    } else if (!response.ok && response.status === 400) {
+      return Promise.reject(json.error);
     }
     return json;
   }).catch(() => {

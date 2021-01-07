@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { UploadToBackend, UploadToClient } from '../components/UploadButtons';
 import PreviewGallery from '../components/PreviewGallery';
@@ -23,6 +24,8 @@ const newImageMetadata = file => {
 const Upload = props => {
   const [images, setImages] = useState(new Map());
   const [update, setUpdate] = useState(false);
+
+  const history = useHistory();
 
   const handleUpload = event => {
     let added = false;
@@ -54,9 +57,17 @@ const Upload = props => {
   }
 
   const handleSend = () => {
+    if (images.size === 0) {
+      return;
+    }
     postImages('/upload', images).then(
-      json => { console.log(json); },
-      error => { console.log(error); }
+      json => {
+        console.log(json);
+        history.push('/home');
+      },
+      error => {
+        console.log(error);
+      }
     );
   }
 

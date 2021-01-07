@@ -27,14 +27,15 @@ func routeImages(c *gin.Context) {
 	// Get the requested image's metadata from the database
 	metadata, err := GetImageMetadata(body.Image, user.ID)
 	if err != nil {
-		fmt.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to retrieve images"})
+		return
 	}
 
 	fmt.Println(metadata)
 
 	c.JSON(http.StatusOK, gin.H{
-		"images": gin.H{
-			"image 1 ID": body.Image,
+		"images": map[uint]interface{}{
+			metadata.ID: metadata,
 		},
 	})
 }

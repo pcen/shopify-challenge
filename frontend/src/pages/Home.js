@@ -7,10 +7,15 @@ const Home = props => {
   const [images, setImages] = useState({});
 
   const handleClick = () => {
-    postJSON('/images', { image: 1 }).then(json => {
-      setImages(json.images);
-      console.log(json.images);
-    })
+    postJSON('/images', { image: 1 }).then(
+      json => {
+        setImages(json.images);
+        console.log(json.images);
+      },
+      error => {
+        setImages(error);
+      }
+    )
   }
 
   return (
