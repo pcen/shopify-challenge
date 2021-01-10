@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 
 import { getImage } from '../utils/requests';
 
+import '../styles/gallery.css';
+
 const ImageLoader = props => {
   const [source, setSource] = useState(null);
 
@@ -12,7 +14,6 @@ const ImageLoader = props => {
       return;
     }
     getImage(id).then(blob => {
-      console.log(blob);
       let image = blob === null ? null : URL.createObjectURL(blob);
       setSource(image);
     });
@@ -23,7 +24,7 @@ const ImageLoader = props => {
   }
 
   return (
-    <img src={source} alt={id}></img>
+    <img className='image' src={source} alt={id}></img>
   );
 }
 

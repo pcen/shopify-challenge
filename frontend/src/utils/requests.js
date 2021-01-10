@@ -60,7 +60,6 @@ const addAuth = headers => {
       Authorization: user.authToken,
     };
   } else {
-    console.log(headers);
     return headers;
   }
 }
@@ -89,7 +88,6 @@ async function getImage(id) {
     method: 'GET',
     headers,
   });
-  console.log(response);
   return handleBlob(response);
 }
 
