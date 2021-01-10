@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"image-repo/core"
-	. "image-repo/models"
+	. "image-repo/database"
 )
 
 // validLogin returns true if the username password combination

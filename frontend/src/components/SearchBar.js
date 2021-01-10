@@ -11,7 +11,7 @@ const SearchBar = props => {
   }
 
   const handleKeyPress = key => {
-    if (key === 'Enter' && query !== previous) {
+    if (key === 'Enter') {
       onSubmit(query);
       setPrevious(query);
     }

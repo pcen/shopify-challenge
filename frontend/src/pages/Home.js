@@ -12,8 +12,11 @@ const Home = props => {
   const [includePublic, setIncludePublic] = useState(false);
 
   const submitQuery = queryString => {
+    console.log('submitting query');
+    console.log('include public:', includePublic);
     postJSON('/images', { query: queryString, includePublic: includePublic, }).then(
       json => {
+        console.log(json);
         let loaders = [];
         json.images.forEach(image => {
           loaders.push(<ImageLoader id={image.ID} key={image.ID} />)
@@ -52,7 +55,7 @@ const Home = props => {
           defaultChecked={includePublic}
           onClick={() => { setIncludePublic(!includePublic) }}
         />
-        <div>Limit Search to My Images</div>
+        <div>Include Public Images</div>
       </div>
 
       <br /><br />

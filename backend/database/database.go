@@ -1,4 +1,4 @@
-package models
+package database
 
 import (
 	"fmt"
@@ -63,6 +63,8 @@ func InitializeDatabase() {
 	fmt.Println(dbPath)
 	fmt.Println(imagesDir)
 
+	// reset database state
+	core.DeleteAllFilesInDirectory(imagesDir)
 	core.DeleteFile(dbPath)
 
 	var err error

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"image-repo/core"
-	. "image-repo/models"
+	. "image-repo/database"
 )
 
 // getImageUploadMetadata extracts the uploaded image metadata from the
@@ -42,7 +42,7 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 			DifferenceHash: 0,
 		}
 
-		err := InsertImageMetadata(&imageMetadata)
+		err := InsertImage(&imageMetadata)
 		if err != nil {
 			fmt.Println(err.Error())
 		}

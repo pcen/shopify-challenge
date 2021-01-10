@@ -1,4 +1,4 @@
-package models
+package database
 
 import (
 	"image-repo/core"
@@ -33,21 +33,28 @@ func GetImageFileStore(id uint, user uint) (string, error) {
 	return metadata.FileStore, result.Error
 }
 
-// SearchQueryImageMetadata returns the metadata for images matching the given
+// SearchQueryImages returns the metadata for images matching the given
 // search query string for the given user ID.
-func SearchQueryImageMetadata(user uint, query string, public bool) ([]ImageMetadata, error) {
+func SearchQueryImages(user uint, query string, public bool) ([]ImageMetadata, error) {
 	var metadata []ImageMetadata
-	if len(query) == 0 {
-		result := DB.Model(ImageMetadata{}).Where("user_id = ?", user).Find(&metadata)
-		return metadata, result.Error
+	var subQuery = DB.Model(ImageMetadata{})
+
+	subQuery.Where("name LIKE ?", "%"+query+"%")
+
+	// Include public images in the query if specified in the request
+	result := DB.Table("(?) as sq", subQuery)
+	if public {
+		result.Where("user_id = ? OR private = ?", user, false)
 	} else {
-		result := DB.Model(ImageMetadata{}).Where("user_id = ?", user).Find(&metadata)
-		return metadata, result.Error
+		result.Where("user_id = ?", user)
 	}
+
+	// Return matching image metadata
+	result.Find(&metadata)
+	return metadata, result.Error
 }
 
-// InsertImageMetadata inserts the given ImageMetadata model into the database.
-func InsertImageMetadata(metadata *ImageMetadata) error {
-	result := DB.Model(ImageMetadata{}).Create(metadata)
-	return result.Error
+// InsertImage inserts the given ImageMetadata model into the database.
+func InsertImage(metadata *ImageMetadata) error {
+	return DB.Model(ImageMetadata{}).Create(metadata).Error
 }

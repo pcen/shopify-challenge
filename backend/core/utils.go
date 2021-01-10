@@ -37,6 +37,29 @@ func DeleteFile(filepath string) error {
 	return os.Remove(filepath)
 }
 
+// GetFilesInDir returns a slice of all the files in the given directory
+func GetFilesInDir(directory string) ([]string, error) {
+	var files []string
+	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if err != nil {
+		return []string{}, err
+	} else {
+		return files, err
+	}
+}
+
+// DeleteAllFilesInDirectory deletes all of the files in the given directory
+func DeleteAllFilesInDirectory(directory string) error {
+	files, err := GetFilesInDir(directory)
+	for _, file := range files {
+		DeleteFile(file)
+	}
+	return err
+}
+
 // WriteFile writes the given file to filepath.
 func WriteFile(filepath string, file io.Reader) error {
 	out, err := os.Create(filepath)

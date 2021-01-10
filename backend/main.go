@@ -3,13 +3,13 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
-	"image-repo/models"
+	"image-repo/database"
 	"image-repo/routes"
 )
 
 func main() {
 	// Initialize the database
-	models.InitializeDatabase()
+	database.InitializeDatabase()
 
 	// Initialize gin Engine
 	app := gin.Default()

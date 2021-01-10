@@ -19,7 +19,7 @@ const handleJSON = response => {
   return response.json().then(json => {
     checkAuthStatus(response);
     // Returns backend error on 400 response
-    if (response.ok && response.status === 400) {
+    if (!response.ok && response.status === 400) {
       return Promise.reject(json.error);
     }
     // Returns backend error on 403 response

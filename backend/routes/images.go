@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	. "image-repo/models"
+	. "image-repo/database"
 )
 
 // routeImage handles get requests to '/image/<id>'
@@ -41,7 +41,7 @@ func routeImage(c *gin.Context) {
 
 // routeImages handles post requests to '/images'
 func routeImages(c *gin.Context) {
-	var body ImageDownloadMeta
+	var body ImageQuery
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
@@ -55,7 +55,7 @@ func routeImages(c *gin.Context) {
 	}
 
 	// Get the requested image's metadata from the database
-	metadata, err := SearchQueryImageMetadata(user.ID, "", false)
+	metadata, err := SearchQueryImages(user.ID, body.Query, body.IncludePublic)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to retrieve images"})
 		return
