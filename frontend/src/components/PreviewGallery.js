@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Popup from 'reactjs-popup';
+
+import Modal from '../components/Modal';
+
+import '../styles/upload.css';
 
 // EditImage component is a button that will open a popup when clicked,
 // providing text input fields to modify metadata about the image metadata
@@ -17,6 +20,7 @@ const EditImage = props => {
   // Update the image description
   const onChangeDescription = event => {
     setChanges({ ...changes, description: event.target.value });
+    console.log(event.target.value);
   }
 
   // Update the image location
@@ -41,29 +45,17 @@ const EditImage = props => {
     setData(changes);
   }
 
-  // Submit changes made to the image upon closing the popup
-  const handleClose = () => {
-    submitChange(changes);
-  }
-
   return (
-    <Popup
+    <Modal
       trigger={<div className='preview-button'>metadata</div>}
-      onClose={handleClose}
-      modal
-      position='top center'
-      closeOnDocumentClick={false}
-      closeOnEscape={false}
-    >
-      {close => (
-        <div className='edit-details-modal'>
-          <button className='close' onClick={close}>&times;</button>
-          {/* Title of Image */}
-          <div className='header'>
+      onClose={() => { submitChange(changes) }}
+      content={
+        <React.Fragment>
+          <div className='edit-upload-header'>
             {editing ? `Editing ${metadata.name}` : `${metadata.name}`}
           </div>
-          <div className='content'>
-            <div className='edit-input-region'>
+          <div className='edit-upload-content'>
+            <div className='edit-upload-input-region'>
               {/* Edit Visibility */}
               <div>
                 {'Private '}
@@ -76,7 +68,7 @@ const EditImage = props => {
               {/* Edit Description */}
               Description
               <textarea type='text'
-                className='edit-input'
+                className='edit-upload-input'
                 style={{ minHeight: '100px' }}
                 value={changes.description}
                 onChange={editing ? onChangeDescription : () => { }}
@@ -85,14 +77,14 @@ const EditImage = props => {
               {/* Edit Location */}
               Location
               <input type='text'
-                className='edit-input'
+                className='edit-upload-input'
                 style={{ height: '20px' }}
                 value={changes.location}
                 onChange={editing ? onChangeLocation : () => { }}
               />
             </div>
             {/* Edit, Save, and Discard Changes */}
-            <div className='edit-actions'>
+            <div className='edit-upload-actions'>
               <div
                 className={!editing ? 'preview-button' : 'preview-button-disabled'}
                 onClick={() => setEditing(true)}
@@ -107,9 +99,9 @@ const EditImage = props => {
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </Popup>
+        </React.Fragment>
+      }
+    />
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import ImageGallery from '../components/ImageGallery';
-import ImageLoader from '../components/ImageLoader';
 import SearchBar from '../components/SearchBar';
 import { postJSON } from '../utils/requests';
 
@@ -12,16 +11,9 @@ const Home = props => {
   const [includePublic, setIncludePublic] = useState(false);
 
   const submitQuery = queryString => {
-    console.log('submitting query');
-    console.log('include public:', includePublic);
     postJSON('/images', { query: queryString, includePublic: includePublic, }).then(
       json => {
-        console.log(json);
-        let loaders = [];
-        json.images.forEach(image => {
-          loaders.push(<ImageLoader id={image.ID} key={image.ID} />)
-        });
-        setImages(loaders);
+        setImages(json.images);
       },
       error => {
         console.log(error);
@@ -60,7 +52,7 @@ const Home = props => {
 
       <br /><br />
       <div>
-        <ImageGallery content={images} />
+        <ImageGallery metadata={images} />
       </div>
     </React.Fragment >
   )

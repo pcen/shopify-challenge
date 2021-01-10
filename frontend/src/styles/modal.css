@@ -1,0 +1,21 @@
+.modal-body {
+  font-size: 14px;
+  border: 1px solid black;
+  width: 80vw;
+  background-color: whitesmoke;
+  border-radius: 10px;
+}
+
+.modal-body > .close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -5px;
+  top: -5px;
+  font-size: 24px;
+  background-color: white;
+  border-radius: 18px;
+  border: 1px solid black;
+}
