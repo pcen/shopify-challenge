@@ -12,6 +12,7 @@ const ImageLoader = props => {
       return;
     }
     getImage(id).then(blob => {
+      console.log(blob);
       let image = blob === null ? null : URL.createObjectURL(blob);
       setSource(image);
     });

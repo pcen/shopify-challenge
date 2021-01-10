@@ -19,7 +19,7 @@ const handleJSON = response => {
   return response.json().then(json => {
     checkAuthStatus(response);
     // Returns backend error on 400 response
-    if (!response.ok && response.status === 400) {
+    if (response.ok && response.status === 400) {
       return Promise.reject(json.error);
     }
     // Returns backend error on 403 response
@@ -27,8 +27,12 @@ const handleJSON = response => {
       return Promise.reject(json.error);
     }
     return json;
-  }).catch(() => {
-    return Promise.reject("response body is not JSON")
+  }).catch(err => {
+    if (!err) {
+      return Promise.reject("response body invalid");
+    } else {
+      return Promise.reject(err);
+    }
   })
 }
 
@@ -56,6 +60,7 @@ const addAuth = headers => {
       Authorization: user.authToken,
     };
   } else {
+    console.log(headers);
     return headers;
   }
 }
@@ -76,12 +81,15 @@ async function postJSON(endpoint, payload) {
 // getImage gets the image with the specified id from the backend. Returns
 // image as a blob if valid, otherwise returns null.
 async function getImage(id) {
-  const headers = addAuth({});
+  const headers = addAuth({
+    'Cache-Control': 'no-cache',
+  });
   let endpoint = '/image/'.concat(id.toString());
   const response = await fetch(endpoint, {
     method: 'GET',
     headers,
   });
+  console.log(response);
   return handleBlob(response);
 }
 

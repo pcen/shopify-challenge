@@ -60,7 +60,7 @@ const EditImage = props => {
           <button className='close' onClick={close}>&times;</button>
           {/* Title of Image */}
           <div className='header'>
-            {editing ? `Editing '${metadata.name}'` : `${metadata.name}`}
+            {editing ? `Editing ${metadata.name}` : `${metadata.name}`}
           </div>
           <div className='content'>
             <div className='edit-input-region'>

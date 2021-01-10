@@ -32,5 +32,6 @@ type ImageUploadMeta struct {
 
 // ImageDownloadMeta JSON Model
 type ImageDownloadMeta struct {
-	Image       uint `json:"image" binding:"required"`
+	Query         string `json:"query"`
+	IncludePublic bool   `json:"includePublic"`
 }
