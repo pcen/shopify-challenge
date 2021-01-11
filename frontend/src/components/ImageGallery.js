@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 
 import { getImage } from '../utils/requests';
@@ -57,10 +58,9 @@ const ImageView = props => {
   )
 }
 
-const ImageGallery = props => {
-  const { metadata } = props;
-
-  useEffect(() => {
+class ImageGallery extends React.Component {
+  constructor(props) {
+    super(props);
     // Clear the image cache when image gallery component is loaded. This
     // ensures that the cache is not persistant across different
     // ImageGallery instances.
@@ -68,33 +68,35 @@ const ImageGallery = props => {
       URL.revokeObjectURL(url);
     }
     cache.clear();
-  }, [])
+  }
 
   // handle changes made to an existing image
-  const handleChange = (id, changes) => {
+  handleChange = (id, changes) => {
     console.log('changing image', id);
   }
 
   // handle deleting an image
-  const handleDelete = id => {
+  handleDelete = id => {
     console.log('deleting image', id);
     console.log(cache);
   }
 
-  return metadata === null ? null : (
-    <div className='image-gallery'>
-      {Array.from(metadata, image => {
-        return (
-          <ImageView
-            image={image}
-            onChange={handleChange}
-            onDelete={handleDelete}
-            key={image.ID}
-          />
-        )
-      })}
-    </div>
-  )
+  render() {
+    return this.props.metadata === null ? null : (
+      <div className='image-gallery'>
+        {Array.from(this.props.metadata, image => {
+          return (
+            <ImageView
+              image={image}
+              onChange={this.handleChange}
+              onDelete={this.handleDelete}
+              key={image.ID}
+            />
+          )
+        })}
+      </div>
+    )
+  }
 }
 
 export default ImageGallery;
