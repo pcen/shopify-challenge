@@ -51,9 +51,12 @@ const Home = props => {
       </div>
 
       <br /><br />
-      <div>
-        <ImageGallery metadata={images} />
-      </div>
+      {
+        images === null || images.length === 0 ?
+          <div>upload some images to view them here</div>
+          :
+          <ImageGallery metadata={images} />
+      }
     </React.Fragment >
   )
 }
