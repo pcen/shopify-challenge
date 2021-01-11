@@ -8,7 +8,7 @@ import '../styles/upload.css';
 // providing text input fields to modify metadata about the image metadata
 // prop. This component wraps a reatjs-popup Popup component:
 // https://react-popup.elazizi.com/
-const EditImage = props => {
+const EditUpload = props => {
   const { metadata, submitChange } = props;
   const [editing, setEditing] = useState(false);
   const [data, setData] = useState(metadata);
@@ -47,7 +47,7 @@ const EditImage = props => {
 
   return (
     <Modal
-      trigger={<div className='preview-button'>metadata</div>}
+      trigger={<div className='preview-button'>details</div>}
       onClose={() => { submitChange(changes) }}
       content={
         <React.Fragment>
@@ -119,7 +119,7 @@ const ImagePreview = props => {
     <div className='preview-frame'>
       <img className='preview-img' src={image.source} alt={image.name} />
       <div className='preview-buttons'>
-        <EditImage metadata={image} submitChange={onChange} />
+        <EditUpload metadata={image} submitChange={onChange} />
         <div className='preview-button' onClick={deleteImage}>remove</div>
       </div>
     </div>
