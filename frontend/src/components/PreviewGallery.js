@@ -20,7 +20,6 @@ const EditUpload = props => {
   // Update the image description
   const onChangeDescription = event => {
     setChanges({ ...changes, description: event.target.value });
-    console.log(event.target.value);
   }
 
   // Update the image location
@@ -45,10 +44,15 @@ const EditUpload = props => {
     setData(changes);
   }
 
+  const handleClose = () => {
+    submitChange(changes)
+    setEditing(false);
+  }
+
   return (
     <Modal
       trigger={<div className='preview-button'>details</div>}
-      onClose={() => { submitChange(changes) }}
+      onClose={handleClose}
       content={
         <React.Fragment>
           <div className='edit-upload-header'>

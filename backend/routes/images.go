@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -37,6 +38,19 @@ func routeImage(c *gin.Context) {
 	imageFile := filepath.Join(GetImagesDir(), filename)
 	c.File(imageFile)
 	c.Status(http.StatusOK)
+}
+
+// routeImageChange handles post requests to '/image/<id>/edit'
+func routeImageEdit(c *gin.Context) {
+	imageID, _ := strconv.Atoi(c.Param("id"))
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("changed image %d", imageID)})
+}
+
+// routeImageDelete handles delete requests to '/image/<id>/delete'
+func routeImageDelete(c *gin.Context) {
+	fmt.Println("delete route")
+	imageID, _ := strconv.Atoi(c.Param("id"))
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("deleted image %d", imageID)})
 }
 
 // routeImages handles post requests to '/images'

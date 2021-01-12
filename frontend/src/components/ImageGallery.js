@@ -23,18 +23,17 @@ const EditImage = props => {
 
   // Update the image description
   const onChangeDescription = event => {
-    setChanges({ ...changes, description: event.target.value });
-    console.log(event.target.value);
+    setChanges({ ...changes, Description: event.target.value });
   }
 
   // Update the image location
   const onChangeLocation = event => {
-    setChanges({ ...changes, location: event.target.value });
+    setChanges({ ...changes, Geolocation: event.target.value });
   }
 
   // Update the image visibility
   const onChangeVisibility = event => {
-    setChanges({ ...changes, private: event.target.checked });
+    setChanges({ ...changes, Private: event.target.checked });
   }
 
   // On discard, set changes back to origional data
@@ -49,12 +48,10 @@ const EditImage = props => {
     setData(changes);
   }
 
-  console.log(metadata);
-
   return (
     <Modal
       trigger={<div className='preview-button'>details</div>}
-      onClose={() => { submitChange(changes) }}
+      onClose={() => { submitChange(metadata.ID, changes) }}
       content={
         <React.Fragment>
           <div className='edit-upload-header'>
@@ -66,7 +63,7 @@ const EditImage = props => {
               <div>
                 {'Private '}
                 <input type='checkbox'
-                  defaultChecked={changes.private}
+                  defaultChecked={changes.Private}
                   onClick={editing ? onChangeVisibility : e => e.preventDefault()}
                 />
               </div>
@@ -76,7 +73,7 @@ const EditImage = props => {
               <textarea type='text'
                 className='edit-upload-input'
                 style={{ minHeight: '100px' }}
-                value={changes.description}
+                value={changes.Description}
                 onChange={editing ? onChangeDescription : () => { }}
               />
               <br></br>
@@ -85,7 +82,7 @@ const EditImage = props => {
               <input type='text'
                 className='edit-upload-input'
                 style={{ height: '20px' }}
-                value={changes.location}
+                value={changes.Geolocation}
                 onChange={editing ? onChangeLocation : () => { }}
               />
             </div>
@@ -131,19 +128,16 @@ const ImageLoader = props => {
     }
   }, []);
 
-  return (
-    <React.Fragment>
-      {
-        source === null ? null :
-          <img className='image' src={source} alt={id}></img>
-      }
-    </React.Fragment>
-  );
+  if (source === null) {
+    return null;
+  } else {
+    return <img className='image' src={source} alt={`image ${id}`}></img>;
+  }
 }
 
 // ImageView
 const ImageView = props => {
-  const { image, onChange, onDelete } = props;
+  const { image, onEdit, onDelete } = props;
 
   const deleteImage = () => {
     onDelete(image.ID);
@@ -153,7 +147,7 @@ const ImageView = props => {
     <div className='preview-frame'>
       <ImageLoader id={image.ID} />
       <div className='preview-buttons'>
-        <EditImage metadata={image} submitChange={onChange} />
+        <EditImage metadata={image} submitChange={onEdit} />
         <div className='preview-button' onClick={deleteImage}>delete</div>
       </div>
     </div>
@@ -172,26 +166,15 @@ class ImageGallery extends React.Component {
     cache.clear();
   }
 
-  // handle changes made to an existing image
-  handleChange = (id, changes) => {
-    console.log('changing image', id);
-  }
-
-  // handle deleting an image
-  handleDelete = id => {
-    console.log('deleting image', id);
-    console.log(cache);
-  }
-
   render() {
     return this.props.metadata === null ? null : (
       <div className='image-gallery'>
-        {Array.from(this.props.metadata, image => {
+        {Array.from(this.props.metadata.values(), image => {
           return (
             <ImageView
               image={image}
-              onChange={this.handleChange}
-              onDelete={this.handleDelete}
+              onEdit={this.props.onEdit}
+              onDelete={this.props.onDelete}
               key={image.ID}
             />
           )

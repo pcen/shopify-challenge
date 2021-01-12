@@ -1,3 +1,5 @@
+@import './colours.css';
+
 /* Grid Container for Image Preview */
 .image-preview-container {
   display: grid;
@@ -17,6 +19,7 @@
 .preview-button {
   cursor: pointer;
   border: 1px solid black;
+  box-shadow: 0 0 1px 0 black;
   margin: 1px;
   border-radius: 6px;
   background-color: white;
@@ -29,8 +32,9 @@
 .preview-button-disabled {
   cursor: default;
   border: 2px solid black;
+  box-shadow: 0 0 2px 0 black;
   border-radius: 6px;
-  background-color: whitesmoke;
+  background-color: var(--light-grey);
   width: 95%;
   text-align: center;
   padding-bottom: 0.1rem;
@@ -38,7 +42,8 @@
 }
 
 .preview-button:hover {
-  background-color: whitesmoke;
+  background-color: var(--light-grey);
+  transition: all 0.3s ease-in-out;
 }
 
 /* Image Preview */

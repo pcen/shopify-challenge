@@ -1,6 +1,7 @@
 .modal-body {
   font-size: 14px;
   border: 1px solid black;
+  box-shadow: 0 0 3px 0 black;
   width: 80vw;
   background-color: whitesmoke;
   border-radius: 10px;
@@ -10,7 +11,7 @@
   cursor: pointer;
   position: absolute;
   display: block;
-  padding: 2px 5px;
+  padding: 3px 5.5px 2px 5.5px;
   line-height: 20px;
   right: -5px;
   top: -5px;
@@ -18,4 +19,10 @@
   background-color: white;
   border-radius: 18px;
   border: 1px solid black;
+  box-shadow: 0 0 2px 0 black;
+}
+
+.modal-body > .close:focus {
+  outline-style: none;
+  box-shadow: 0 0 0 1pt black;
 }

@@ -2,18 +2,16 @@ package core
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
-// signingKey is the secret key used to sign JWTs.
-const signingKey = "secret"
-
 // GetSigningKey returns the signing key for JWTs.
 func GetSigningKey() []byte {
-	return []byte(signingKey)
+	return []byte(os.Getenv("IMAGE_REPO_SIGNING_KEY"))
 }
 
 // NewToken returns a new signed JWT string

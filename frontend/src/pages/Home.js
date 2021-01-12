@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import ImageGallery from '../components/ImageGallery';
 import SearchBar from '../components/SearchBar';
-import { postJSON } from '../utils/requests';
+import { get, postJSON } from '../utils/requests';
 
 // Home Page
 const Home = props => {
   const [images, setImages] = useState(null);
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [includePublic, setIncludePublic] = useState(false);
 
   const submitQuery = queryString => {
     postJSON('/images', { query: queryString, includePublic: includePublic, }).then(
       json => {
-        setImages(json.images);
+        let result = new Map();
+        for (let image of json.images) {
+          result.set(image.ID, image);
+        }
+        setImages(result);
       },
       error => {
         console.log(error);
@@ -28,6 +33,33 @@ const Home = props => {
   useEffect(() => {
     submitQuery('');
   }, []);
+
+  const handleEdit = (id, change) => {
+    console.log(images);
+    images.set(id, change);
+    console.log(images);
+    postJSON(`/image/${id}/edit`, change).then(
+      json => {
+        console.log(json);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  const handleDelete = id => {
+    images.delete(id);
+    forceUpdate();
+    get(`/image/${id}/delete`).then(
+      json => {
+        console.log(json);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
 
   return (
     <React.Fragment>
@@ -49,14 +81,11 @@ const Home = props => {
         />
         <div>Include Public Images</div>
       </div>
-
-      <br /><br />
-      {
-        images === null || images.length === 0 ?
-          <div>upload some images to view them here</div>
-          :
-          <ImageGallery metadata={images} />
-      }
+      <ImageGallery
+        metadata={images}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
     </React.Fragment >
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { UploadToBackend, UploadToClient } from '../components/UploadButtons';
@@ -23,7 +23,7 @@ const newImageMetadata = file => {
 // Upload Images Page
 const Upload = props => {
   const [images, setImages] = useState(new Map());
-  const [update, setUpdate] = useState(false);
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const history = useHistory();
 
@@ -41,19 +41,19 @@ const Upload = props => {
       }
     }
     if (added) {
-      setUpdate(!update);
+      forceUpdate();
     }
   }
 
   const handleRemove = name => {
     if (images.delete(name)) {
-      setUpdate(!update);
+      forceUpdate();
     }
   }
 
   const handleEdit = changes => {
     images.set(changes.name, changes);
-    setUpdate(!update);
+    forceUpdate();
   }
 
   const handleSend = () => {

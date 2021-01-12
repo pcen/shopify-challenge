@@ -8,6 +8,10 @@ const SearchBar = props => {
 
   const handleChange = value => {
     setQuery(value);
+    if (value === '' && previous !== '') {
+      onSubmit(value);
+      setPrevious(value);
+    }
   }
 
   const handleKeyPress = key => {
