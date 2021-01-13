@@ -7,9 +7,10 @@ To install the necessary dependencies for the frontend run `yarn install` in the
 To run the frontend, run `yarn start` in the `/frontend` folder. To run the backend run `go run main.go` in the `/backend` folder. To view the application, open [localhost:3000](localhost:3000) in the browser.
 
 ## Features
-- upload one or multiple images
-- delete one or multiple images
-- search for images from text
+- upload one image
+- upload multiple images
+- delete images
+- search for images from text (description and location)
 - JWT authorization implementation
 - image visibility (public or private)
 - access control
