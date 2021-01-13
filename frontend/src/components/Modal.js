@@ -12,7 +12,7 @@ const Modal = props => {
       modal
       position='top center'
       closeOnDocumentClick={false}
-      closeOnEscape={false}
+      closeOnEscape={true}
     >
       {close => (
         <div className='modal-body'>

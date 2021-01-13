@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 
 import ImageGallery from '../components/ImageGallery';
 import SearchBar from '../components/SearchBar';
-import { get, postJSON } from '../utils/requests';
+import { deleteReq, postJSON } from '../utils/requests';
 
 // Home Page
 const Home = props => {
@@ -49,16 +49,17 @@ const Home = props => {
   }
 
   const handleDelete = id => {
-    images.delete(id);
-    forceUpdate();
-    get(`/image/${id}/delete`).then(
+    deleteReq(`/image/${id}/delete`).then(
       json => {
         console.log(json);
+        images.delete(id);
+        forceUpdate();
       },
       error => {
         console.log(error);
+        forceUpdate();
       }
-    )
+    );
   }
 
   return (

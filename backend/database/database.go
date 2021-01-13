@@ -55,6 +55,13 @@ func GetImagesDir() string {
 	return imagesDir
 }
 
+// GetFileStoreFullPath returns the absolute path to the file in the filestore
+// with the given filename parameter.
+func GetFileStoreFullPath(filename string) string {
+	imagesDir := GetImagesDir()
+	return filepath.Join(imagesDir, filename)
+}
+
 // InitializeDatabase sets
 func InitializeDatabase() {
 	dbPath := getDatabaseFilepath()

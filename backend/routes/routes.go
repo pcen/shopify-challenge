@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"image-repo/core"
+	"image-repo/database"
 )
 
 // routeHome handles get requests to '/'
@@ -25,14 +26,23 @@ func routeCheckAuthToken(c *gin.Context) {
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// return an unauthorized response if the request is not authorized
-		valid, err := core.RequestTokenValid(c)
+		valid, errStr := core.RequestTokenValid(c)
 		if !valid {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": err,
+				"error": errStr,
 			})
 			c.Abort()
 			return
 		}
+		_, err := database.GetUserFromJWT(c.GetHeader("Authorization"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid user",
+			})
+			c.Abort()
+			return
+		}
+
 		// continue handling authorized requests
 		c.Next()
 	}

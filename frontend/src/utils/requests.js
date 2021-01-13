@@ -16,24 +16,22 @@ const checkAuthStatus = (response) => {
 // handleJSON returns the JSON response from a request, or a Promise.reject on
 // errors.
 const handleJSON = response => {
-  return response.json().then(json => {
-    checkAuthStatus(response);
-    // Returns backend error on 400 response
-    if (!response.ok && response.status === 400) {
+  checkAuthStatus(response);
+  if (!response.ok && (response.status === 400 || response.status === 403)) {
+    return response.json().then(json => {
       return Promise.reject(json.error);
-    }
-    // Returns backend error on 403 response
-    if (!response.ok && response.status === 403) {
-      return Promise.reject(json.error);
-    }
-    return json;
-  }).catch(err => {
-    if (!err) {
-      return Promise.reject("response body invalid");
-    } else {
-      return Promise.reject(err);
-    }
-  })
+    });
+  } else {
+    return response.json().then(json => {
+      return json;
+    }).catch(err => {
+      if (!err) {
+        return Promise.reject("invalid response");
+      } else {
+        return Promise.reject(`${err.toString()}`);
+      }
+    });
+  }
 }
 
 // handleBlob returns the blob response from a request, or null on errors.
@@ -83,7 +81,7 @@ async function getImage(id) {
   const headers = addAuth({
     'Cache-Control': 'no-cache',
   });
-  let endpoint = '/image/'.concat(id.toString());
+  let endpoint = `/image/${id.toString()}`;
   const response = await fetch(endpoint, {
     method: 'GET',
     headers,
@@ -91,11 +89,21 @@ async function getImage(id) {
   return handleBlob(response);
 }
 
-// Gets response as JSON from the given endpoint.
-async function get(endpoint) {
+// Sends get request to given endpoint and returns response as JSON.
+async function getReq(endpoint) {
   const headers = addAuth({});
   const response = await fetch(endpoint, {
     method: 'GET',
+    headers,
+  });
+  return handleJSON(response);
+}
+
+// Sends delete request to given endpoint and returns response as JSON.
+async function deleteReq(endpoint) {
+  const headers = addAuth({});
+  const response = await fetch(endpoint, {
+    method: 'DELETE',
     headers,
   });
   return handleJSON(response);
@@ -133,4 +141,4 @@ async function postImages(endpoint, images) {
   return handleJSON(response);
 }
 
-export { get, postJSON, postImages, getImage }
+export { getReq, deleteReq, postJSON, postImages, getImage }

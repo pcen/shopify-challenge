@@ -1,13 +1,14 @@
 package database
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 // ImageMetadata Database Model
 type ImageMetadata struct {
-	gorm.Model
-
+	ID             uint `gorm:"primarykey"`
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 	UserID         uint   // Foreign key to the image owner
 	Name           string // Image name
 	Format         string // Image format
@@ -47,8 +48,9 @@ const (
 
 // User Model
 type User struct {
-	gorm.Model
-
+	ID           uint `gorm:"primarykey"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 	Username     string `gorm:"unique"`
 	PasswordHash string
 	Role         UserRole

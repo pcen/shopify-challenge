@@ -17,6 +17,7 @@ const EditImage = props => {
   const [editing, setEditing] = useState(false);
   const [data, setData] = useState(metadata);
   const [changes, setChanges] = useState({});
+  const [changesMade, setChangesMade] = useState(false);
 
   // Set the initial changed metadata to be the origional metadata
   useEffect(() => { setChanges(metadata); }, []);
@@ -24,16 +25,19 @@ const EditImage = props => {
   // Update the image description
   const onChangeDescription = event => {
     setChanges({ ...changes, Description: event.target.value });
+    setChangesMade(true);
   }
 
   // Update the image location
   const onChangeLocation = event => {
     setChanges({ ...changes, Geolocation: event.target.value });
+    setChangesMade(true);
   }
 
   // Update the image visibility
   const onChangeVisibility = event => {
     setChanges({ ...changes, Private: event.target.checked });
+    setChangesMade(true);
   }
 
   // On discard, set changes back to origional data
@@ -48,10 +52,16 @@ const EditImage = props => {
     setData(changes);
   }
 
+  const onClose = () => {
+    if (changesMade) {
+      submitChange(metadata.ID, changes)
+    }
+  }
+
   return (
     <Modal
       trigger={<div className='preview-button'>details</div>}
-      onClose={() => { submitChange(metadata.ID, changes) }}
+      onClose={onClose}
       content={
         <React.Fragment>
           <div className='edit-upload-header'>
@@ -140,6 +150,8 @@ const ImageView = props => {
   const { image, onEdit, onDelete } = props;
 
   const deleteImage = () => {
+    URL.revokeObjectURL(cache.get(image.ID))
+    cache.delete(image.ID);
     onDelete(image.ID);
   }
 

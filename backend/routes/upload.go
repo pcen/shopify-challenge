@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"path/filepath"
 
@@ -42,9 +41,8 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 			DifferenceHash: 0,
 		}
 
-		err := InsertImage(&imageMetadata)
-		if err != nil {
-			fmt.Println(err.Error())
+		if err := InsertImage(&imageMetadata); err != nil {
+			panic(err.Error())
 		}
 
 		// Save image file to file registry
@@ -65,20 +63,21 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 func routeUpload(c *gin.Context) {
 
 	// Get the user associated with the request's JWT
-	user, err := GetUserFromJWT(c.GetHeader("Authorization"))
-	if err != nil {
-		panic(err.Error())
-	}
+	user, _ := GetUserFromJWT(c.GetHeader("Authorization"))
 
 	// Get the metadata of the uploaded images from the request body
 	meta, err := getImageUploadMetadata(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid upload metadata"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid upload metadata"},
+		)
 		return
 	}
 
 	// Save the uploaded images to the database
 	saveImages(c, meta, &user)
 
-	c.JSON(http.StatusOK, gin.H{"message": "upload successful"})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "upload successful"},
+	)
 }
