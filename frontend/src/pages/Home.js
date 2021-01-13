@@ -35,15 +35,14 @@ const Home = props => {
   }, []);
 
   const handleEdit = (id, change) => {
-    console.log(images);
     images.set(id, change);
-    console.log(images);
     postJSON(`/image/${id}/edit`, change).then(
       json => {
         console.log(json);
       },
       error => {
         console.log(error);
+        forceUpdate();
       }
     );
   }

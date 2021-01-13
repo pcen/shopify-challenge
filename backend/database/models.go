@@ -5,6 +5,9 @@ import (
 )
 
 // ImageMetadata Database Model
+// An image in the database. The actual image is stored as a file
+// in the /database/images folder. The file is referenced by the FileStore
+// member specifying the image's filename in the images folder.
 type ImageMetadata struct {
 	ID             uint `gorm:"primarykey"`
 	CreatedAt      time.Time
@@ -22,6 +25,7 @@ type ImageMetadata struct {
 }
 
 // ImageUploadMeta JSON Model
+// The metadata supplied for an image when uploaded by a user.
 type ImageUploadMeta struct {
 	Name        string `json:"name" binding:"required"`
 	Format      string `json:"format" binding:"required"`
@@ -32,6 +36,7 @@ type ImageUploadMeta struct {
 }
 
 // ImageQuery JSON Model
+// The data supplied when a user submits an image search.
 type ImageQuery struct {
 	Query         string `json:"query"`
 	IncludePublic bool   `json:"includePublic"`
@@ -59,12 +64,16 @@ type User struct {
 }
 
 // UserLogin Model
+// The data supplied when a user attempts to login.
 type UserLogin struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 // UserSession Model
+// The data returned to the user and stored in their browser to make
+// requests to endpoints requiring authorization (and authentication for image
+// image ownership).
 type UserSession struct {
 	Username  string `json:"username" binding:"required"`
 	AuthToken string `json:"authToken" binding:"required"`

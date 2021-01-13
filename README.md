@@ -10,7 +10,7 @@ To run the frontend, run `yarn start` in the `/frontend` folder. To run the back
 - upload one or multiple images
 - delete one or multiple images
 - search for images from text
-- JWT authorization
+- JWT authorization implementation
 - image visibility (public or private)
 - access control
 

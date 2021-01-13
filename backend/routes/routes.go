@@ -22,7 +22,8 @@ func routeCheckAuthToken(c *gin.Context) {
 }
 
 // authMiddleware checks if incoming requests are authorized and will reject
-// unauthorized requests.
+// unauthorized requests. It will also reject requests for which the JWT
+// contains a user that is not registered in the database.
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// return an unauthorized response if the request is not authorized

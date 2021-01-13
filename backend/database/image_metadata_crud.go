@@ -2,34 +2,9 @@ package database
 
 import (
 	"fmt"
-	"image-repo/core"
 )
 
-// This file implements common CRUD operations for database models.
-
-// GetUser returns the User in the database with the given username
-func GetUser(username string) (User, error) {
-	var user User
-	result := DB.Model(&User{}).Where("username = ?", username).First(&user)
-	return user, result.Error
-}
-
-// GetUserFromJWT returns the User in the database associated with the given
-// JWT.
-func GetUserFromJWT(authToken string) (User, error) {
-	var user User
-	username, err := core.GetTokenUser(authToken)
-	if err != nil {
-		return user, err
-	}
-	user, err = GetUser(username)
-	return user, err
-}
-
-// InsertImage inserts the given ImageMetadata model into the database.
-func InsertImage(metadata *ImageMetadata) error {
-	return DB.Model(ImageMetadata{}).Create(metadata).Error
-}
+// CRUD operations for image metadata
 
 // ownsImage returns true if the given user ID owns the given image ID.
 func ownsImage(image uint, user uint) bool {
@@ -43,6 +18,11 @@ func imageIsPublic(image uint) bool {
 	var metadata ImageMetadata
 	result := DB.Model(ImageMetadata{}).Where("id = ?", image).First(&metadata)
 	return (result.Error == nil) && (!metadata.Private)
+}
+
+// InsertImage inserts the given ImageMetadata model into the database.
+func InsertImage(metadata *ImageMetadata) error {
+	return DB.Model(ImageMetadata{}).Create(metadata).Error
 }
 
 // GetImage gets the ImageMetada corresponding to the given id if the requestee
@@ -73,28 +53,16 @@ func DeleteImage(id uint, user uint) error {
 	return DB.Model(ImageMetadata{}).Delete(&metadata).Error
 }
 
-// DeleteImageFileStore deletes the given filename parameter from the image
-// file storage.
-func DeleteImageFileStore(filename string) error {
-	path := GetFileStoreFullPath(filename)
-	return core.DeleteFile(path)
-}
-
-// GetImageFileStore returns the store filepath of the image with the given ID
-// if it is owned by the given user ID or it is a public image.
-func GetImageFileStore(id uint, user uint) (string, error) {
-	var metadata ImageMetadata
-	metadata, err := GetImage(id, user)
-	return metadata.FileStore, err
-}
-
 // SearchQueryImages returns the metadata for images matching the given
 // search query string for the given user ID.
 func SearchQueryImages(user uint, query string, public bool) ([]ImageMetadata, error) {
 	var metadata []ImageMetadata
 	var subQuery = DB.Model(ImageMetadata{})
 
-	subQuery.Where("name LIKE ?", "%"+query+"%")
+	fuzzyQuery := fmt.Sprintf("%s%s%s", "%", query, "%")
+
+	subQuery.Where("name LIKE ?", fuzzyQuery)
+	subQuery.Or("geolocation LIKE ?", fuzzyQuery)
 
 	// Include public images in the query if specified in the request
 	result := DB.Table("(?) as sq", subQuery)

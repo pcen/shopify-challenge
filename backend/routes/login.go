@@ -13,7 +13,7 @@ import (
 // validLogin returns true if the username password combination
 // is a valid set of credentials
 func validLogin(username string, password string) bool {
-	user, err := GetUser(username)
+	user, err := GetUserFromUsername(username)
 	if err != nil {
 		fmt.Println("Login user query failed with error", err.Error())
 		return false

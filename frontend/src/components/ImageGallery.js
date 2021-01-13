@@ -20,7 +20,9 @@ const EditImage = props => {
   const [changesMade, setChangesMade] = useState(false);
 
   // Set the initial changed metadata to be the origional metadata
-  useEffect(() => { setChanges(metadata); }, []);
+  useEffect(() => {
+    setChanges(metadata);
+  }, []);
 
   // Update the image description
   const onChangeDescription = event => {
@@ -148,11 +150,15 @@ const ImageLoader = props => {
 // ImageView
 const ImageView = props => {
   const { image, onEdit, onDelete } = props;
+  const [deleted, setDeleted] = useState(false);
 
   const deleteImage = () => {
-    URL.revokeObjectURL(cache.get(image.ID))
-    cache.delete(image.ID);
-    onDelete(image.ID);
+    if (!deleted) {
+      setDeleted(true);
+      URL.revokeObjectURL(cache.get(image.ID))
+      cache.delete(image.ID);
+      onDelete(image.ID);
+    }
   }
 
   return (
