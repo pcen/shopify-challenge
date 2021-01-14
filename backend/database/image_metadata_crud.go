@@ -59,9 +59,11 @@ func DeleteImage(id uint, user uint) error {
 // given tag structs.
 func SetImageTags(id uint, tags []core.ImageTag) error {
 	var sb strings.Builder
-	for _, tag := range tags {
+	for index, tag := range tags {
 		sb.WriteString(tag.Tag.Value)
-		sb.WriteString(" ")
+		if index != len(tags)-1 {
+			sb.WriteString(",")
+		}
 	}
 	result := DB.Model(ImageMetadata{}).Where("id = ?", id).Update("ml_tags", sb.String())
 	return result.Error

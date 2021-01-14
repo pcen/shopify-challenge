@@ -11,6 +11,22 @@ import '../styles/gallery.css';
 // to avoid stale cache entries.
 const cache = new Map();
 
+const TagList = props => {
+  const { tags } = props;
+
+  return (
+    <React.Fragment>
+      <div style={{fontSize: '13pt'}}>Tags</div>
+      <br></br>
+      <div className='image-tags'>
+        {Array.from(tags.split(','), v => {
+          return <div className='image-tag'>{v}</div>
+        })}
+      </div>
+    </React.Fragment>
+  )
+}
+
 // EditImage
 const EditImage = props => {
   const { metadata, submitChange } = props;
@@ -69,49 +85,54 @@ const EditImage = props => {
           <div className='edit-upload-header'>
             {editing ? `Editing ${metadata.Name}` : `${metadata.Name}`}
           </div>
-          <div className='edit-upload-content'>
-            <div className='edit-upload-input-region'>
-              {/* Edit Visibility */}
-              <div>
-                {'Private '}
-                <input type='checkbox'
-                  defaultChecked={changes.Private}
-                  onClick={editing ? onChangeVisibility : e => e.preventDefault()}
+          <div className='edit-image-content'>
+            <div className='image-content-left'>
+              <div className='edit-image-input-image'>
+                {/* Edit Visibility */}
+                <div>
+                  {'Private '}
+                  <input type='checkbox'
+                    defaultChecked={changes.Private}
+                    onClick={editing ? onChangeVisibility : e => e.preventDefault()}
+                  />
+                </div>
+                <br></br>
+                {/* Edit Description */}
+                Description
+                <textarea type='text'
+                  className='edit-image-input'
+                  style={{ minHeight: '100px' }}
+                  value={changes.Description}
+                  onChange={editing ? onChangeDescription : () => { }}
+                />
+                <br></br>
+                {/* Edit Location */}
+                Location
+                <input type='text'
+                  className='edit-image-input'
+                  style={{ height: '20px' }}
+                  value={changes.Geolocation}
+                  onChange={editing ? onChangeLocation : () => { }}
                 />
               </div>
-              <br></br>
-              {/* Edit Description */}
-              Description
-              <textarea type='text'
-                className='edit-upload-input'
-                style={{ minHeight: '100px' }}
-                value={changes.Description}
-                onChange={editing ? onChangeDescription : () => { }}
-              />
-              <br></br>
-              {/* Edit Location */}
-              Location
-              <input type='text'
-                className='edit-upload-input'
-                style={{ height: '20px' }}
-                value={changes.Geolocation}
-                onChange={editing ? onChangeLocation : () => { }}
-              />
+              {/* Edit, Save, and Discard Changes */}
+              <div className='edit-upload-actions'>
+                <div
+                  className={!editing ? 'preview-button' : 'preview-button-disabled'}
+                  onClick={() => setEditing(true)}
+                >
+                  Edit
+                </div>
+                <div className='preview-button' onClick={onDiscard}>
+                  Discard
+                </div>
+                <div className='preview-button' onClick={onSave}>
+                  Save
+                </div>
+              </div>
             </div>
-            {/* Edit, Save, and Discard Changes */}
-            <div className='edit-upload-actions'>
-              <div
-                className={!editing ? 'preview-button' : 'preview-button-disabled'}
-                onClick={() => setEditing(true)}
-              >
-                Edit
-              </div>
-              <div className='preview-button' onClick={onDiscard}>
-                Discard
-              </div>
-              <div className='preview-button' onClick={onSave}>
-                Save
-              </div>
+            <div className='image-content-right'>
+              <TagList tags={metadata.MLTags} />
             </div>
           </div>
         </React.Fragment>
