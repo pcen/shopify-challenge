@@ -19,8 +19,8 @@ const TagList = props => {
       <div style={{fontSize: '13pt'}}>Tags</div>
       <br></br>
       <div className='image-tags'>
-        {Array.from(tags.split(','), v => {
-          return <div className='image-tag'>{v}</div>
+        {Array.from(tags.split(','), (v, i) => {
+          return <div className='image-tag' key={i}>{v}</div>
         })}
       </div>
     </React.Fragment>
@@ -62,6 +62,7 @@ const EditImage = props => {
   const onDiscard = () => {
     setEditing(false);
     setChanges(data);
+    setChangesMade(false);
   }
 
   // On save, set origional to changed data
@@ -159,7 +160,7 @@ const ImageView = props => {
         }
       });
     }
-  }, []);
+  }, [image.ID]);
 
   // Callback function when image is deleted
   const deleteImage = () => {
@@ -176,7 +177,7 @@ const ImageView = props => {
   } else {
     return (
       <div className='preview-frame'>
-        <img className='image' src={source} alt={`image ${image.ID}`}></img>
+        <img className='image' src={source} alt={`${image.ID}`}></img>
         <div className='image-title'>{image.Name}</div>
         <div className='preview-buttons'>
           <EditImage metadata={image} submitChange={onEdit} />

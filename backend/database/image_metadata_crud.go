@@ -74,11 +74,21 @@ func SetImageTags(id uint, tags []core.ImageTag) error {
 func SearchQueryImages(user uint, query string, public bool) ([]ImageMetadata, error) {
 	var metadata []ImageMetadata
 	var subQuery = DB.Model(ImageMetadata{})
+	fuzzyQuery := fmt.Sprintf("%%%s%%", query)
 
-	fuzzyQuery := fmt.Sprintf("%s%s%s", "%", query, "%")
-
+	// Query for matching image name
 	subQuery.Where("name LIKE ?", fuzzyQuery)
+	// Query for matching image location
 	subQuery.Or("geolocation LIKE ?", fuzzyQuery)
+	// Query for single matching image tag
+	subQuery.Or("ml_tags LIKE ?", fuzzyQuery)
+
+	// Query metadata tags by a comma separated list of query tags
+	tagList := strings.Split(query, ",")
+	for _, tag := range tagList {
+		fuzzyTag := fmt.Sprintf("%%%s%%", strings.TrimSpace(tag))
+		subQuery.Or("ml_tags LIKE ?", fuzzyTag)
+	}
 
 	// Include public images in the query if specified in the request
 	result := DB.Table("(?) as sq", subQuery)

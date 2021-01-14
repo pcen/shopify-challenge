@@ -109,7 +109,7 @@ func tagImage(uploadID string) ([]ImageTag, error) {
 	apiSecret := os.Getenv("IMAGGA_API_SECRET")
 
 	const tagURL = "https://api.imagga.com/v2/tags"
-	queryURL := fmt.Sprintf("%s%s%s", tagURL, "?image_upload_id=", uploadID)
+	queryURL := fmt.Sprintf("%s?image_upload_id=%s", tagURL, uploadID)
 	req, _ := http.NewRequest("GET", queryURL, nil)
 	req.SetBasicAuth(apiKey, apiSecret)
 
