@@ -63,6 +63,7 @@ func uploadImage(filepath string) (string, error) {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	resp, err := client.Do(req)
+
 	if err != nil {
 		return "", errors.New("Error when sending request to imagga API")
 	}
