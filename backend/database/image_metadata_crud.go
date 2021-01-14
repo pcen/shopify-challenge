@@ -2,6 +2,8 @@ package database
 
 import (
 	"fmt"
+	"image-repo/core"
+	"strings"
 )
 
 // CRUD operations for image metadata
@@ -51,6 +53,18 @@ func DeleteImage(id uint, user uint) error {
 	}
 	metadata, _ := GetImage(id, user)
 	return DB.Model(ImageMetadata{}).Delete(&metadata).Error
+}
+
+// SetImageTags sets the tags for the given image ID based off of the list of
+// given tag structs.
+func SetImageTags(id uint, tags []core.ImageTag) error {
+	var sb strings.Builder
+	for _, tag := range tags {
+		sb.WriteString(tag.Tag.Value)
+		sb.WriteString(" ")
+	}
+	result := DB.Model(ImageMetadata{}).Where("id = ?", id).Update("ml_tags", sb.String())
+	return result.Error
 }
 
 // SearchQueryImages returns the metadata for images matching the given

@@ -120,7 +120,8 @@ const EditImage = props => {
   )
 }
 
-// ImageLoader
+// ImageLoader loads an image from the backend, or from cache if it has already
+// been loaded.
 const ImageLoader = props => {
   const [source, setSource] = useState(null);
 
@@ -164,6 +165,7 @@ const ImageView = props => {
   return (
     <div className='preview-frame'>
       <ImageLoader id={image.ID} />
+      <div className='image-title'>{image.Name}</div>
       <div className='preview-buttons'>
         <EditImage metadata={image} submitChange={onEdit} />
         <div className='preview-button' onClick={deleteImage}>delete</div>

@@ -94,6 +94,15 @@ func routeImageDelete(c *gin.Context) {
 	// Get the user associated with the request's JWT
 	user, _ := GetUserFromJWT(c.GetHeader("Authorization"))
 
+	// Get the path to the image file in the database
+	imageFile, err := GetImageFilepath(uint(imageID), user.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("cannot delete image %d", imageID),
+		})
+		return
+	}
+
 	// First check to see if the user may delete the image by attempting to
 	// delete the image metadata.
 	err = DeleteImage(uint(imageID), user.ID)
@@ -106,14 +115,7 @@ func routeImageDelete(c *gin.Context) {
 
 	// If the user was permitted to delete the image metadata, delete the image
 	// from the image file store.
-	imageStore, err := GetImageFilepath(uint(imageID), user.ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("cannot delete image %d", imageID),
-		})
-		return
-	}
-	DeleteImageFile(imageStore)
+	DeleteImageFile(imageFile)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("deleted image %d", imageID),

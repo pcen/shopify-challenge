@@ -12,6 +12,7 @@ var prng *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 var fileExtensionLUT = map[string] string {
 	"image/jpeg": ".jpg",
+	"image/png": ".png",
 }
 
 // Filepath Utilities

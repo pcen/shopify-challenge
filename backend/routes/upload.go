@@ -35,10 +35,8 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 			FileStore:      store,
 			Description:    m.Description,
 			Geolocation:    m.Location,
-			OCRText:        "ocr text",
+			MLTags:         "",
 			Private:        m.Private,
-			AverageHash:    0,
-			DifferenceHash: 0,
 		}
 
 		if err := InsertImage(&imageMetadata); err != nil {
@@ -51,11 +49,20 @@ func saveImages(c *gin.Context, meta []ImageUploadMeta, user *User) {
 			panic(err.Error())
 		}
 
-		err = core.WriteFile(filepath.Join(GetImagesDir(), store), image)
-		if err != nil {
+		if err = WriteImageFile(store, image); err != nil {
 			panic(err.Error())
 		}
 
+		// Get image tags and update the image's metadata. If the tagging
+		// fails, the metadata is unmodified and no tags are applied.
+		fullPath := filepath.Join(GetImagesDir(), store)
+		tags, err := core.GetImageTags(fullPath)
+		if err == nil {
+			// imageMetadata ID is set upon inserting into database
+			SetImageTags(imageMetadata.ID, tags)
+		} else {
+			panic(err.Error())
+		}
 	}
 }
 

@@ -9,19 +9,17 @@ import (
 // in the /database/images folder. The file is referenced by the FileStore
 // member specifying the image's filename in the images folder.
 type ImageMetadata struct {
-	ID             uint `gorm:"primarykey"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	UserID         uint   // Foreign key to the image owner
-	Name           string // Image name
-	Format         string // Image format
-	FileStore      string `gorm:"unique"` // Filename of image in database
-	Description    string // A description of the image
-	Geolocation    string // The image's geolocation
-	OCRText        string // OCR text from image
-	Private        bool   // Image visibility (public or private)
-	AverageHash    uint64 // Perceptual hash
-	DifferenceHash uint64 // Perceptual hash
+	ID          uint `gorm:"primarykey"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	UserID      uint   // Foreign key to the image owner
+	Name        string // Image name
+	Format      string // Image format
+	FileStore   string `gorm:"unique"` // Filename of image in database
+	Description string // A description of the image
+	Geolocation string // The image's geolocation
+	MLTags      string // Image tags generated from ML model
+	Private     bool   // Image visibility (public or private)
 }
 
 // ImageUploadMeta JSON Model
