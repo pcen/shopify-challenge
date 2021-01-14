@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { useState, useEffect } from 'react';
 
 import Modal from './Modal';
-import { getImage } from '../utils/requests';
+import { getReq, getImage } from '../utils/requests';
 
 import '../styles/gallery.css';
 
@@ -16,7 +16,7 @@ const TagList = props => {
 
   return (
     <React.Fragment>
-      <div style={{fontSize: '13pt'}}>Tags</div>
+      <div style={{ fontSize: '13pt' }}>Tags</div>
       <br></br>
       <div className='image-tags'>
         {Array.from(tags.split(','), (v, i) => {
@@ -34,6 +34,7 @@ const EditImage = props => {
   const [data, setData] = useState(metadata);
   const [changes, setChanges] = useState({});
   const [changesMade, setChangesMade] = useState(false);
+  const [ignore, forceUpdate] = useReducer(x => x + 1);
 
   // Set the initial changed metadata to be the origional metadata
   useEffect(() => {
@@ -77,9 +78,26 @@ const EditImage = props => {
     }
   }
 
+  // On open, check if the image has been tagged since query result metadata
+  // was received from the backend.
+  const checkForTags = () => {
+    if (metadata.MLTags === '') {
+      getReq(`image/${metadata.ID}/tags`).then(
+        json => {
+          metadata.MLTags = json.tags;
+          forceUpdate();
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
+  }
+
   return (
     <Modal
-      trigger={<div className='preview-button'>details</div>}
+      trigger={<div className='preview-button' onClick={checkForTags}>details</div>}
+      onOpen={checkForTags}
       onClose={onClose}
       content={
         <React.Fragment>

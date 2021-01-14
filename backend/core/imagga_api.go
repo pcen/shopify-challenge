@@ -11,20 +11,30 @@ import (
 	"os"
 )
 
+// Imagga API endpoints
+const (
+	uploadURL = "https://api.imagga.com/v2/uploads"
+	tagURL = "https://api.imagga.com/v2/tags"
+)
+
 // uploadID
+// The unique ID used to specify an image when sending requests to the '/tag'
+// endpoint.
 type uploadID struct {
 	ID string `json:"upload_id"`
 }
 
 // ImaggaUploadResponse
+// Imagga API response for '/upload' requests
 type uploadResponse struct {
 	Result uploadID    `json:"result"`
 	Status interface{} `json:"status"`
 }
 
 // UploadImage
-// Modified imagga example code from:
-// https://docs.imagga.com/?go#uploads
+// Uploads an image to imagga and returns the corresponding imagga ID for the
+// uploaded image.
+// Modified example code from https://docs.imagga.com/?go#uploads
 func uploadImage(filepath string) (string, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -57,7 +67,6 @@ func uploadImage(filepath string) (string, error) {
 	apiKey := os.Getenv("IMAGGA_API_KEY")
 	apiSecret := os.Getenv("IMAGGA_API_SECRET")
 
-	const uploadURL = "https://api.imagga.com/v2/uploads"
 	req, _ := http.NewRequest("POST", uploadURL, body)
 	req.SetBasicAuth(apiKey, apiSecret)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -90,25 +99,26 @@ type ImageTag struct {
 }
 
 // tagList
+// List of tags returned from the imagga '/tag' endpoint response
 type tagList struct {
 	Tags []ImageTag `json:"tags"`
 }
 
 // tagResponse
+// Imagga API response from '/tag' endpoint requests
 type tagResponse struct {
 	Result tagList     `json:"result"`
 	Status interface{} `json:"status"`
 }
 
 // TagImage
-// Modified imagga example code from:
-// https://docs.imagga.com/?go#tags
+// Gets a list of tags for the specified image from imagga API.
+// Modified example code from https://docs.imagga.com/?go#tags
 func tagImage(uploadID string) ([]ImageTag, error) {
 	client := &http.Client{}
 	apiKey := os.Getenv("IMAGGA_API_KEY")
 	apiSecret := os.Getenv("IMAGGA_API_SECRET")
 
-	const tagURL = "https://api.imagga.com/v2/tags"
 	queryURL := fmt.Sprintf("%s?image_upload_id=%s", tagURL, uploadID)
 	req, _ := http.NewRequest("GET", queryURL, nil)
 	req.SetBasicAuth(apiKey, apiSecret)
@@ -131,15 +141,16 @@ func tagImage(uploadID string) ([]ImageTag, error) {
 }
 
 // GetImageTags gets the tags for the image at the given filepath and returns
-// a list of tags and the confidence score for each tag.
+// a list of tags and the confidence score for each tag. If an error is
+// encountered, returns an empty ImageTag slice.
 func GetImageTags(filepath string) ([]ImageTag, error) {
 	uploadID, err := uploadImage(filepath)
 	if err != nil {
-		return nil, err
+		return []ImageTag{}, err
 	}
 	tags, err := tagImage(uploadID)
 	if err != nil {
-		return nil, err
+		return []ImageTag{}, err
 	}
 	return tags, nil
 }

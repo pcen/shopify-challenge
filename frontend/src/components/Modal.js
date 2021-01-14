@@ -3,12 +3,13 @@ import Popup from 'reactjs-popup';
 import '../styles/modal.css';
 
 const Modal = props => {
-  const { trigger, onClose, content } = props;
+  const { trigger, onClose, onOpen, content } = props;
 
   return (
     <Popup
       trigger={trigger}
       onClose={onClose}
+      onOpen={onOpen}
       modal
       position='top center'
       closeOnDocumentClick={false}

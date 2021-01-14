@@ -82,6 +82,8 @@ func SearchQueryImages(user uint, query string, public bool) ([]ImageMetadata, e
 	subQuery.Or("geolocation LIKE ?", fuzzyQuery)
 	// Query for single matching image tag
 	subQuery.Or("ml_tags LIKE ?", fuzzyQuery)
+	// Query for matching description
+	subQuery.Or("description LIKE ?", fuzzyQuery)
 
 	// Query metadata tags by a comma separated list of query tags
 	tagList := strings.Split(query, ",")

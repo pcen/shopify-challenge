@@ -11,6 +11,8 @@ import (
 	. "image-repo/database"
 )
 
+// invalidImageID returns an "invalid image id" error as JSON for the given
+// gin context.
 func invalidImageID(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{
 		"error": "invalid image id",
@@ -122,7 +124,37 @@ func routeImageDelete(c *gin.Context) {
 	})
 }
 
+// routeImageTags handles get requests to '/image/<id>/tags'
+// Returns the auto-generated tags for the requested image if the requestee
+// owns the image or the image is public.
+func routeImageTags(c *gin.Context) {
+	imageID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		invalidImageID(c)
+		return
+	}
+
+	// Get the user associated with the request's JWT
+	user, _ := GetUserFromJWT(c.GetHeader("Authorization"))
+
+	// Get the specified image's metadata
+	image, err := GetImage(uint(imageID), user.ID)
+
+	if err != nil {
+		c.JSON(http.StatusNoContent, gin.H{
+			"tags": "",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"tags": image.MLTags,
+	})
+}
+
 // routeImages handles post requests to '/images'
+// Accepts a query string in the request body and returns a list of image
+// metadata found in the database as a result of the given query string.
 func routeImages(c *gin.Context) {
 	var body ImageQuery
 	if err := c.BindJSON(&body); err != nil {

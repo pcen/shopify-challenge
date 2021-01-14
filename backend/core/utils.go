@@ -8,16 +8,23 @@ import (
 	"time"
 )
 
+const (
+	// Chars used when generating image file names in the database
+	filenameChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+)
+
 var prng *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
+// fileExtensionLUT maps browser file type strings to the corresponding file
+// extension.
 var fileExtensionLUT = map[string] string {
 	"image/jpeg": ".jpg",
 	"image/png": ".png",
 }
 
-// Filepath Utilities
-
 // ParentDir returns the 'level'th parent of the filepath.
+// For example, ParentDir("/a/b/c.txt", 2) returns "/a" since the directory
+// "/a" is the second-level parent of file "/a/b/c.txt".
 func ParentDir(path string, level int) string {
 	for i := 0; i < level; i++ {
 		path = filepath.Dir(path)
@@ -38,7 +45,7 @@ func DeleteFile(filepath string) error {
 	return os.Remove(filepath)
 }
 
-// GetFilesInDir returns a slice of all the files in the given directory
+// GetFilesInDir returns a slice of all the files in the given directory.
 func GetFilesInDir(directory string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
@@ -52,7 +59,7 @@ func GetFilesInDir(directory string) ([]string, error) {
 	}
 }
 
-// DeleteAllFilesInDirectory deletes all of the files in the given directory
+// DeleteAllFilesInDirectory deletes all of the files in the given directory.
 func DeleteAllFilesInDirectory(directory string) error {
 	files, err := GetFilesInDir(directory)
 	for _, file := range files {
@@ -72,13 +79,12 @@ func WriteFile(filepath string, file io.Reader) error {
 	return err
 }
 
-// RandomAlphanumericString returns a random string of the given length
+// RandomAlphanumericString returns a random string of the given length.
 // containing only alphanumeric characters.
 func RandomAlphanumericString(length int) string {
-	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	bytes := make([]byte, length)
 	for i := range bytes {
-		bytes[i] = chars[prng.Intn(len(chars))]
+		bytes[i] = filenameChars[prng.Intn(len(filenameChars))]
 	}
 	return string(bytes)
 }

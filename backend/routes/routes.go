@@ -35,6 +35,7 @@ func authMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		// return a bad request if the requestee is not a user in the database
 		_, err := database.GetUserFromJWT(c.GetHeader("Authorization"))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -59,6 +60,7 @@ func AttachAll(app *gin.Engine) {
 	// Authorization protected endpoints
 	app.POST("/images", authMiddleware(), routeImages)
 	app.GET("/image/:id", authMiddleware(), routeImage)
+	app.GET("/image/:id/tags", authMiddleware(), routeImageTags)
 	app.POST("/image/:id/edit", authMiddleware(), routeImageEdit)
 	app.DELETE("/image/:id/delete", authMiddleware(), routeImageDelete)
 	app.POST("/upload", authMiddleware(), routeUpload)
