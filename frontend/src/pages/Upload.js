@@ -24,6 +24,7 @@ const newImageMetadata = file => {
 const Upload = props => {
   const [images, setImages] = useState(new Map());
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+  const [hasUploaded, setHasUploaded] = useState(false);
 
   const history = useHistory();
 
@@ -57,9 +58,10 @@ const Upload = props => {
   }
 
   const handleSend = () => {
-    if (images.size === 0) {
+    if (images.size === 0 || hasUploaded) {
       return;
     }
+    setHasUploaded(true);
     postImages('/upload', images).then(
       json => {
         console.log(json);
@@ -67,6 +69,7 @@ const Upload = props => {
       },
       error => {
         console.log(error);
+        setHasUploaded(false);
       }
     );
   }

@@ -120,39 +120,27 @@ const EditImage = props => {
   )
 }
 
-// ImageLoader loads an image from the backend, or from cache if it has already
-// been loaded.
-const ImageLoader = props => {
+// ImageView
+const ImageView = props => {
+  const { image, onEdit, onDelete } = props;
+  const [deleted, setDeleted] = useState(false);
   const [source, setSource] = useState(null);
 
-  const { id } = props;
-
   useEffect(() => {
-    if (cache.has(id)) {
-      setSource(cache.get(id));
+    if (cache.has(image.ID)) {
+      setSource(cache.get(image.ID));
     } else {
-      getImage(id).then(blob => {
+      getImage(image.ID).then(blob => {
         let image = blob === null ? null : URL.createObjectURL(blob, { autoRevoke: false });
         setSource(image);
-        if (!cache.has(id) && image !== null) {
-          cache.set(id, image);
+        if (!cache.has(image.ID) && image !== null) {
+          cache.set(image.ID, image);
         }
       });
     }
   }, []);
 
-  if (source === null) {
-    return null;
-  } else {
-    return <img className='image' src={source} alt={`image ${id}`}></img>;
-  }
-}
-
-// ImageView
-const ImageView = props => {
-  const { image, onEdit, onDelete } = props;
-  const [deleted, setDeleted] = useState(false);
-
+  // Callback function when image is deleted
   const deleteImage = () => {
     if (!deleted) {
       setDeleted(true);
@@ -162,18 +150,25 @@ const ImageView = props => {
     }
   }
 
-  return (
-    <div className='preview-frame'>
-      <ImageLoader id={image.ID} />
-      <div className='image-title'>{image.Name}</div>
-      <div className='preview-buttons'>
-        <EditImage metadata={image} submitChange={onEdit} />
-        <div className='preview-button' onClick={deleteImage}>delete</div>
+  if (source === null) {
+    return null;
+  } else {
+    return (
+      <div className='preview-frame'>
+        <img className='image' src={source} alt={`image ${image.ID}`}></img>
+        <div className='image-title'>{image.Name}</div>
+        <div className='preview-buttons'>
+          <EditImage metadata={image} submitChange={onEdit} />
+          <div className='preview-button' onClick={deleteImage}>delete</div>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
+// ImageGallery provides a gallery view of images obtained from querying the
+// backend. The image blobs are cached in a cache which is cleared in the
+// constructor.
 class ImageGallery extends React.Component {
   constructor(props) {
     super(props);
