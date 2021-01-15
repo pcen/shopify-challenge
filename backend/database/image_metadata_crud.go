@@ -41,7 +41,10 @@ func UpdateImage(metadata *ImageMetadata, user uint) error {
 	if !ownsImage(metadata.ID, user) {
 		return fmt.Errorf("requestee does not own image %d", metadata.ID)
 	}
-	result := DB.Model(ImageMetadata{}).Where("id = ?", metadata.ID).Updates(metadata)
+	result := DB.Model(ImageMetadata{}).Where("id = ?", metadata.ID)
+	result.Update("description", metadata.Description)
+	result.Update("geolocation", metadata.Geolocation)
+	result.Update("private", metadata.Private)
 	return result.Error
 }
 
