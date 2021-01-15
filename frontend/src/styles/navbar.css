@@ -2,10 +2,26 @@
 
 .navbar {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  background: black;
+}
+
+.navbar-username {
+  display: flex;
+  align-items: center;
+  color: var(--medium-grey);
+  flex: 3;
+}
+
+.navbar-link-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 30px 10px 0px;
   background-color: black;
   color: var(--medium-grey);
+  flex: 2;
 }
 
 .navbar > * {
@@ -22,6 +38,7 @@
   color: whitesmoke;
   text-decoration: none;
   cursor: pointer;
+  padding: 0px 10px 0px 10px;
 }
 
 .link:hover {

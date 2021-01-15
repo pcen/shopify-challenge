@@ -61,6 +61,7 @@ const CreateUserForm = props => {
           <label>Password:</label>
           <input type='password' onChange={e => setPassword(e.target.value)} />
         </div>
+        <div className='create-user-button' onClick={submitData}>Create Account</div>
       </form>
     )
   }

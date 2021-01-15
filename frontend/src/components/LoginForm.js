@@ -53,6 +53,7 @@ const LoginForm = props => {
           <label>Password:</label>
           <input type='password' onChange={e => setPassword(e.target.value)} />
         </div>
+        <div className='login-button' onClick={submitData}>Login</div>
       </form>
     )
   }
