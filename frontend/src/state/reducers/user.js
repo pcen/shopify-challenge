@@ -5,6 +5,7 @@ const LOGGED_OUT_USER = {
   loggedIn: false,
   username: '',
   authToken: '',
+  id: null,
 }
 
 // getUserOnRefresh checks local storage, and returns the 'user'

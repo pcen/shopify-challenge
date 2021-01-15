@@ -7,12 +7,13 @@ import { deleteReq, postJSON } from '../utils/requests';
 // Home Page
 const Home = props => {
   const [images, setImages] = useState(null);
+  const [lastQuery, setLastQuery] = useState('');
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
-
   const [includePublic, setIncludePublic] = useState(false);
 
-  const submitQuery = queryString => {
-    postJSON('/images', { query: queryString, includePublic: includePublic, }).then(
+  const submitQuery = (queryString, pub) => {
+    setLastQuery(queryString);
+    postJSON('/images', { query: queryString, includePublic: pub, }).then(
       json => {
         let result = new Map();
         for (let image of json.images) {
@@ -27,11 +28,11 @@ const Home = props => {
   }
 
   const handleQuery = queryString => {
-    submitQuery(queryString);
+    submitQuery(queryString, includePublic);
   }
 
   useEffect(() => {
-    submitQuery('');
+    submitQuery('', includePublic);
   }, []);
 
   const handleEdit = (id, change) => {
@@ -61,6 +62,12 @@ const Home = props => {
     );
   }
 
+  const handleChangeIncludePublic = () => {
+    let pub = !includePublic;
+    setIncludePublic(pub);
+    submitQuery(lastQuery, pub);
+  }
+
   return (
     <React.Fragment>
       <h1>Home</h1>
@@ -77,7 +84,7 @@ const Home = props => {
           style={{ margin: '0vw 5px 0vw 3vw' }}
           type='checkbox'
           defaultChecked={includePublic}
-          onClick={() => { setIncludePublic(!includePublic) }}
+          onClick={handleChangeIncludePublic}
         />
         <div>Include Public Images</div>
       </div>

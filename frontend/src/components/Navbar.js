@@ -15,11 +15,14 @@ const Links = [
   },
 ]
 
+// Set of routes that do not have a navbar
+const noNavRoutes = new Set(['/', '/create-user']);
+
 // Navbar component provides links to each page site.
 const Navbar = props => {
   const location = useLocation();
 
-  if (location.pathname === '/') {
+  if (noNavRoutes.has(location.pathname)) {
     return null;
   }
 

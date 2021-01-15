@@ -6,8 +6,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// SaltAndHash creates a salted hash of the given password.
-func SaltAndHash(password string) string {
+// PasswordSaltAndHash creates a salted hash of the given password.
+func PasswordSaltAndHash(password string) string {
 	passwordBytes := []byte(password)
 	hash, err := bcrypt.GenerateFromPassword(passwordBytes, bcrypt.DefaultCost)
 	if err != nil {

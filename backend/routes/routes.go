@@ -56,6 +56,7 @@ func AttachAll(app *gin.Engine) {
 	app.GET("/", routeHome)
 	app.GET("/check-auth", routeCheckAuthToken)
 	app.POST("/login", routeLogin)
+	app.POST("/create-user", routeCreateUser)
 
 	// Authorization protected endpoints
 	app.POST("/images", authMiddleware(), routeImages)

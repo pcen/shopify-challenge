@@ -15,13 +15,11 @@ import (
 var DB *gorm.DB
 
 // populateTestData adds test data to the database
-// TODO: move test data generation to separate file
 func populateTestData(db *gorm.DB) {
-	db.Create(&User{
-		Username:     "admin",
-		PasswordHash: core.SaltAndHash("password"),
-		Role:         Admin,
-	})
+	err := CreateUser("admin", "password")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // getDatabaseDir returns the absolute path to the database directory. It will

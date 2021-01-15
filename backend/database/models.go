@@ -75,4 +75,5 @@ type UserLogin struct {
 type UserSession struct {
 	Username  string `json:"username" binding:"required"`
 	AuthToken string `json:"authToken" binding:"required"`
+	ID        uint   `json:"id"`
 }

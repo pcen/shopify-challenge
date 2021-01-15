@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
+import { useStore } from 'react-redux';
 
 import Modal from './Modal';
 import { getReq, getImage } from '../utils/requests';
@@ -11,6 +11,7 @@ import '../styles/gallery.css';
 // to avoid stale cache entries.
 const cache = new Map();
 
+// TagList component lists all of the tags associated with an image.
 const TagList = props => {
   const { tags } = props;
 
@@ -27,6 +28,28 @@ const TagList = props => {
   )
 }
 
+// EditImageModalButtons component is the set of buttons used to edit, save
+// changes, and discard changes for an image.
+const EditImageModalButtons = props => {
+  const { editing, setEditing, onDiscard, onSave } = props;
+  return (
+    <div className='edit-upload-actions'>
+      <div
+        className={!editing ? 'preview-button' : 'preview-button-selected'}
+        onClick={() => setEditing(true)}
+      >
+        Edit
+    </div>
+      <div className='preview-button' onClick={onDiscard}>
+        Discard
+    </div>
+      <div className='preview-button' onClick={onSave}>
+        Save
+    </div>
+    </div>
+  )
+}
+
 // EditImage
 const EditImage = props => {
   const { metadata, submitChange } = props;
@@ -35,10 +58,13 @@ const EditImage = props => {
   const [changes, setChanges] = useState({});
   const [changesMade, setChangesMade] = useState(false);
   const [ignore, forceUpdate] = useReducer(x => x + 1);
+  const user = useStore().getState().user;
 
   // Set the initial changed metadata to be the origional metadata
   useEffect(() => {
     setChanges(metadata);
+    console.log(metadata);
+    console.log(user);
   }, []);
 
   // Update the image description
@@ -72,10 +98,11 @@ const EditImage = props => {
     setData(changes);
   }
 
-  const onClose = () => {
+  const handleClose = () => {
     if (changesMade) {
       submitChange(metadata.ID, changes)
     }
+    setEditing(false);
   }
 
   // On open, check if the image has been tagged since query result metadata
@@ -98,7 +125,7 @@ const EditImage = props => {
     <Modal
       trigger={<div className='preview-button' onClick={checkForTags}>details</div>}
       onOpen={checkForTags}
-      onClose={onClose}
+      onClose={handleClose}
       content={
         <React.Fragment>
           <div className='edit-upload-header'>
@@ -135,20 +162,14 @@ const EditImage = props => {
                 />
               </div>
               {/* Edit, Save, and Discard Changes */}
-              <div className='edit-upload-actions'>
-                <div
-                  className={!editing ? 'preview-button' : 'preview-button-disabled'}
-                  onClick={() => setEditing(true)}
-                >
-                  Edit
-                </div>
-                <div className='preview-button' onClick={onDiscard}>
-                  Discard
-                </div>
-                <div className='preview-button' onClick={onSave}>
-                  Save
-                </div>
-              </div>
+              {user.id !== metadata.UserID ? null :
+                <EditImageModalButtons
+                  editing={editing}
+                  setEditing={setEditing}
+                  onDiscard={onDiscard}
+                  onSave={onSave}
+                />
+              }
             </div>
             <div className='image-content-right'>
               <TagList tags={metadata.MLTags} />
@@ -165,6 +186,7 @@ const ImageView = props => {
   const { image, onEdit, onDelete } = props;
   const [deleted, setDeleted] = useState(false);
   const [source, setSource] = useState(null);
+  const user = useStore().getState().user;
 
   useEffect(() => {
     if (cache.has(image.ID)) {
@@ -199,7 +221,11 @@ const ImageView = props => {
         <div className='image-title'>{image.Name}</div>
         <div className='preview-buttons'>
           <EditImage metadata={image} submitChange={onEdit} />
-          <div className='preview-button' onClick={deleteImage}>delete</div>
+          {user.id !== image.UserID ?
+            <div className='non-button'>public image</div>
+            :
+            <div className='preview-button' onClick={deleteImage}>delete</div>
+          }
         </div>
       </div>
     )

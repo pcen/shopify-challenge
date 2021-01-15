@@ -1,13 +1,11 @@
-@import './colours.css';
-
-.login {
+.create-user {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 15% 0% 0% 0%;
 }
 
-.login-form {
+.create-user-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,13 +15,13 @@
   width: 90px;
 }
 
-.create-user-link {
+.login-link {
   font-size: 13pt;
   text-decoration: none;
   color: #0000EE;
 }
 
-.create-user-link:hover {
+.login-link:hover {
   text-decoration: underline;
 }
 
