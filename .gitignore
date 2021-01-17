@@ -1,5 +1,4 @@
 **/.vscode
 **/*.sh
 **/*.db
-**/*.jpg
-**/*.png
+/database
