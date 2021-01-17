@@ -122,6 +122,7 @@ const ImagePreview = props => {
   return (
     <div className='preview-frame'>
       <img className='preview-img' src={image.source} alt={image.name} />
+      <div className='preview-title'>{image.name}</div>
       <div className='preview-buttons'>
         <EditUpload metadata={image} submitChange={onChange} />
         <div className='preview-button' onClick={deleteImage}>remove</div>

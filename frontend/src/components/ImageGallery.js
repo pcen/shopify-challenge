@@ -63,8 +63,6 @@ const EditImage = props => {
   // Set the initial changed metadata to be the origional metadata
   useEffect(() => {
     setChanges(metadata);
-    console.log(metadata);
-    console.log(user);
   }, []);
 
   // Update the image description

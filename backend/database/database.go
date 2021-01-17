@@ -69,8 +69,8 @@ func InitializeDatabase() {
 	fmt.Println(imagesDir)
 
 	// reset database state
-	core.DeleteAllFilesInDirectory(imagesDir)
-	core.DeleteFile(dbPath)
+	// core.DeleteAllFilesInDirectory(imagesDir)
+	// core.DeleteFile(dbPath)
 
 	var err error
 	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})

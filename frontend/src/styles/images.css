@@ -56,3 +56,10 @@
   width: 100%;
   height: auto;
 }
+
+.preview-title {
+  padding: 0px 0px 3px 0px;
+  font-weight: 600;
+  font-size: 12pt;
+  overflow: hidden;
+}
