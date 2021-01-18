@@ -57,7 +57,7 @@ const EditImage = props => {
   const [data, setData] = useState(metadata);
   const [changes, setChanges] = useState({});
   const [changesMade, setChangesMade] = useState(false);
-  const [ignore, forceUpdate] = useReducer(x => x + 1);
+  const [ignore, forceUpdate] = useReducer(x => x + 1, 0);
   const user = useStore().getState().user;
 
   // Set the initial changed metadata to be the origional metadata
@@ -106,6 +106,7 @@ const EditImage = props => {
   // On open, check if the image has been tagged since query result metadata
   // was received from the backend.
   const checkForTags = () => {
+    console.log(metadata.MLTags);
     if (metadata.MLTags === '') {
       getReq(`image/${metadata.ID}/tags`).then(
         json => {
