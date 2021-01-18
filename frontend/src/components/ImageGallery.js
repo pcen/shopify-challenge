@@ -106,7 +106,6 @@ const EditImage = props => {
   // On open, check if the image has been tagged since query result metadata
   // was received from the backend.
   const checkForTags = () => {
-    console.log(metadata.MLTags);
     if (metadata.MLTags === '') {
       getReq(`image/${metadata.ID}/tags`).then(
         json => {
